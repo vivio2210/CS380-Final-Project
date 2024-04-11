@@ -26,5 +26,7 @@ public class PlayerMovement : MonoBehaviour
                 Agent.SetDestination(Hits[0].point);
             }
         }
+
+        //Debug.Log(Converter.Instance.WorldtoGridPos(transform.position).posx + "," + Converter.Instance.WorldtoGridPos(transform.position).posz);
     }
 }
