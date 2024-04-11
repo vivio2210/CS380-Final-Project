@@ -4,6 +4,7 @@ using UnityEngine;
 using System;
 using Unity.Mathematics;
 using Unity.VisualScripting;
+using Unity.Burst.CompilerServices;
 
 [Serializable]
 public class Gridpos
@@ -32,5 +33,63 @@ public class PositionConverter
     public static Vector3 GridPosToWorld(int x, int z)
     {
         return new Vector3(x, 1, z);
+    }
+
+    // To round up the decimal number to grid pos
+    public static Vector3 WorldToWorld(Vector3 worldposition)
+    {
+        return new Vector3((int)worldposition.x, 1, (int)worldposition.z);
+    }
+}
+
+public class MapChecker 
+{
+    public static bool IsWall(Gridpos gridpos)
+    {
+        RaycastHit hit;
+        Vector3 position = PositionConverter.GridPosToWorld(gridpos);
+        position.y = 2;
+        Vector3 direction = new Vector3(0, -1, 0);
+
+        if (Physics.Raycast(position, direction, out hit, Mathf.Infinity))
+        {
+            if (hit.transform.gameObject.tag == "Wall")
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public static Gridpos GetNearestGrid(Gridpos gridpos)
+    {
+        Gridpos result = new Gridpos(0,0);
+        int radius = 1;
+        while (true)
+        {
+            for (int i = -radius; i < radius; i++)
+            {
+                for (int j = -radius; j < radius; j++)
+                {
+                    result.posx = gridpos.posx + i;
+                    result.posz = gridpos.posz + j;
+                    if (!IsWall(result))
+                    {
+                        break;
+                    }
+                }
+            }
+
+            radius++;
+        }
+
+
+
+        return result;
     }
 }

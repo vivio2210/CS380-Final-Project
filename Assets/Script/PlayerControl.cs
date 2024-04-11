@@ -27,6 +27,8 @@ public class PlayerControl : MonoBehaviour
             }
         }
 
-        //Debug.Log(Converter.Instance.WorldtoGridPos(transform.position).posx + "," + Converter.Instance.WorldtoGridPos(transform.position).posz);
+
+
+        //Debug.Log(gameObject.transform.forward.normalized);
     }
 }
