@@ -1,9 +1,9 @@
-﻿using System.Collections;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 
 [RequireComponent(typeof(NavMeshAgent))]
-public class EnemyMovement : MonoBehaviour
+public class EnemyControl : MonoBehaviour
 {
     public Transform Player;
     public float UpdateRate = 0.1f;
@@ -22,8 +22,8 @@ public class EnemyMovement : MonoBehaviour
     private IEnumerator FollowTarget()
     {
         WaitForSeconds Wait = new WaitForSeconds(UpdateRate);
-        
-        while(enabled)
+
+        while (enabled)
         {
             Agent.SetDestination(Player.transform.position);
             yield return Wait;

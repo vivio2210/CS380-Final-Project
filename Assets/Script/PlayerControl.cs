@@ -1,13 +1,13 @@
-﻿using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine;
 
 [RequireComponent(typeof(NavMeshAgent))]
-public class PlayerMovement : MonoBehaviour
+public class PlayerControl : MonoBehaviour
 {
     [SerializeField]
     private Camera Camera = null;
     private NavMeshAgent Agent;
-    
+
     private RaycastHit[] Hits = new RaycastHit[1];
 
     private void Awake()
