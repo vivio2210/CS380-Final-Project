@@ -23,7 +23,7 @@ public class PlayerControl : MonoBehaviour
 
             if (Physics.RaycastNonAlloc(ray, Hits) > 0)
             {
-                Agent.SetDestination(Hits[0].point);
+                Agent.SetDestination(PositionConverter.GridPosToWorld(PositionConverter.WorldToGridPos(Hits[0].point)));
             }
         }
 

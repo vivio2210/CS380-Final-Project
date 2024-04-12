@@ -27,7 +27,7 @@ public class PositionConverter
 
     public static Vector3 GridPosToWorld(Gridpos gridpos)
     {
-        return new Vector3(gridpos.posx,1,gridpos.posz);
+        return new Vector3(gridpos.posx + 0.5f,1,gridpos.posz+ 0.5f);
     }
 
     public static Vector3 GridPosToWorld(int x, int z)
