@@ -5,6 +5,7 @@ using System;
 using Unity.Mathematics;
 using Unity.VisualScripting;
 using Unity.Burst.CompilerServices;
+using UnityEngine.UIElements;
 
 [Serializable]
 public class Gridpos
@@ -15,6 +16,19 @@ public class Gridpos
     public Gridpos(int x, int z) {
         posx = x; posz = z;
     }
+
+    public static Gridpos operator +(Gridpos rhs1, Gridpos rhs2)
+    {
+        Gridpos result = new Gridpos(0,0);
+        result.posx = rhs1.posx + rhs2.posx;
+        result.posz = rhs1.posz + rhs2.posz;
+        return result;
+    }
+
+    //public static bool operator ==(Gridpos rhs1, Gridpos rhs2)
+    //{
+    //    return (rhs1.posx == rhs2.posz && rhs1.posz == rhs2.posz);
+    //}
 }
 
 public class PositionConverter
@@ -32,13 +46,13 @@ public class PositionConverter
 
     public static Vector3 GridPosToWorld(int x, int z)
     {
-        return new Vector3(x, 1, z);
+        return new Vector3(x + 0.5f, 1, z + 0.5f);
     }
 
     // To round up the decimal number to grid pos
     public static Vector3 WorldToWorld(Vector3 worldposition)
     {
-        return new Vector3((int)worldposition.x, 1, (int)worldposition.z);
+        return new Vector3((int)worldposition.x + 0.5f, 1, (int)worldposition.z + 0.5f);
     }
 }
 
@@ -66,30 +80,26 @@ public class MapChecker
         return true;
     }
 
-    public static Gridpos GetNearestGrid(Gridpos gridpos)
-    {
-        Gridpos result = new Gridpos(0,0);
-        int radius = 1;
-        while (true)
-        {
-            for (int i = -radius; i < radius; i++)
-            {
-                for (int j = -radius; j < radius; j++)
-                {
-                    result.posx = gridpos.posx + i;
-                    result.posz = gridpos.posz + j;
-                    if (!IsWall(result))
-                    {
-                        break;
-                    }
-                }
-            }
-
-            radius++;
-        }
-
-
-
-        return result;
-    }
+    //public static Gridpos GetNearestGrid(Gridpos gridpos)
+    //{
+    //    Gridpos result = new Gridpos(0,0);
+    //    int radius = 1;
+    //    while (true)
+    //    {
+    //        for (int i = -radius; i < radius; i++)
+    //        {
+    //            for (int j = -radius; j < radius; j++)
+    //            {
+    //                result.posx = gridpos.posx + i;
+    //                result.posz = gridpos.posz + j;
+    //                if (!IsWall(result))
+    //                {
+    //                    break;
+    //                }
+    //            }
+    //        }
+    //        radius++;
+    //    }
+    //    return result;
+    //}
 }
