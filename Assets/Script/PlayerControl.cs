@@ -1,5 +1,8 @@
 using UnityEngine.AI;
 using UnityEngine;
+using Unity.VisualScripting;
+using UnityEngine.UIElements;
+using System;
 
 [RequireComponent(typeof(NavMeshAgent))]
 public class PlayerControl : MonoBehaviour
@@ -10,6 +13,15 @@ public class PlayerControl : MonoBehaviour
 
     private RaycastHit[] Hits = new RaycastHit[1];
 
+    [SerializeField]
+    private GameObject[] enemies = null;
+
+    private int mapSize = 20;
+    private int enemyDetectingArea = 25; // should be odd number
+
+    [SerializeField]
+    private Gridpos currentTargetPosition = new Gridpos(0, 0);
+
     private void Awake()
     {
         Agent = GetComponent<NavMeshAgent>();
@@ -17,18 +29,76 @@ public class PlayerControl : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyUp(KeyCode.Mouse0))
-        {
-            Ray ray = Camera.ScreenPointToRay(Input.mousePosition);
+        MoveToFarthestDistance();
+        //if (Input.GetKeyUp(KeyCode.Mouse0))
+        //{
+        //    Ray ray = Camera.ScreenPointToRay(Input.mousePosition);
 
-            if (Physics.RaycastNonAlloc(ray, Hits) > 0)
-            {
-                Agent.SetDestination(PositionConverter.GridPosToWorld(PositionConverter.WorldToGridPos(Hits[0].point)));
-            }
-        }
+        //    if (Physics.RaycastNonAlloc(ray, Hits) > 0)
+        //    {
+        //        Agent.SetDestination(PositionConverter.GridPosToWorld(PositionConverter.WorldToGridPos(Hits[0].point)));
+        //    }
+        //}
 
 
 
         //Debug.Log(gameObject.transform.forward.normalized);
+    }
+
+    private void MoveToFarthestDistance()
+    {
+        float maxDistance = 0;
+        float radius = Mathf.Floor(enemyDetectingArea / 2);
+
+        Gridpos farthestGrid = new Gridpos(0, 0);
+        Gridpos playerGrisPos = new Gridpos(PositionConverter.WorldToGridPos(this.gameObject.transform.position).posx,
+            PositionConverter.WorldToGridPos(this.gameObject.transform.position).posz);
+
+        if (enemies != null)
+        {
+            for (int row = -(int)radius; row < radius + 1; row++)
+            {
+                for (int col = -(int)radius; col < radius + 1; col++)
+                {
+                    Gridpos currentGrid = new Gridpos(playerGrisPos.posx + col, playerGrisPos.posz + row);
+                    if ((currentGrid.posx >= 0 || currentGrid.posx < mapSize) && (currentGrid.posz >= 0 || currentGrid.posz < mapSize)
+                        && MapChecker.IsWall(currentGrid) == false)
+                    {
+                        float distance = 0;
+                        float totalDistance = 0;
+
+                        for (int i = 0; i < enemies.Length; i++)
+                        {
+                            // find distance from gridPos to all enemies and check that is wall or not
+                            Gridpos enemyPosition = PositionConverter.WorldToGridPos(enemies[i].gameObject.transform.position);
+
+                            distance = Mathf.Pow(enemyPosition.posx - currentGrid.posx, 2) + Mathf.Pow(enemyPosition.posz - currentGrid.posz, 2);
+                            if (distance <= 1.0f)
+                                distance *= 0;
+                            else if (distance <= 3.0f)
+                                distance *= 0.2f;
+                            else if (distance <= 5.0f)
+                                distance *= 0.4f;
+                            else if (distance <= 7.0f)
+                                distance *= 0.6f;
+                            else if (distance <= 9.0f)
+                                distance *= 0.8f;
+
+                            totalDistance += distance;
+                        }
+
+                        if (totalDistance > maxDistance)
+                        {
+                            maxDistance = totalDistance;
+                            farthestGrid.posx = currentGrid.posx;
+                            farthestGrid.posz = currentGrid.posz;
+                        }
+                    }
+                }
+            }
+
+            currentTargetPosition = farthestGrid;
+            Agent.SetDestination(PositionConverter.GridPosToWorld(farthestGrid));
+        }
     }
 }

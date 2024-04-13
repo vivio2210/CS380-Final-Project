@@ -7054,7 +7054,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!136 &361867632
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -11910,7 +11910,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!136 &587367504
 CapsuleCollider:
@@ -12035,6 +12035,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Camera: {fileID: 963194227}
+  enemies:
+  - {fileID: 15626789}
+  - {fileID: 793918135}
+  currentTargetPosition:
+    posx: 0
+    posz: 0
 --- !u!65 &587367510
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -21488,7 +21494,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!136 &1127056753
 CapsuleCollider:
   m_ObjectHideFlags: 0
