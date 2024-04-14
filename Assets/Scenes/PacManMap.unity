@@ -530,7 +530,7 @@ GameObject:
   - component: {fileID: 15626796}
   m_Layer: 7
   m_Name: GhostRed
-  m_TagString: Untagged
+  m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -7050,7 +7050,7 @@ GameObject:
   - component: {fileID: 361867638}
   m_Layer: 7
   m_Name: GhostBlue
-  m_TagString: Untagged
+  m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -14818,7 +14818,7 @@ GameObject:
   - component: {fileID: 793918141}
   m_Layer: 7
   m_Name: GhostPink
-  m_TagString: Untagged
+  m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -21490,7 +21490,7 @@ GameObject:
   - component: {fileID: 1127056759}
   m_Layer: 7
   m_Name: GhostOrange
-  m_TagString: Untagged
+  m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

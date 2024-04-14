@@ -1,8 +1,10 @@
 using UnityEngine.AI;
 using UnityEngine;
+using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine.UIElements;
 using System;
+using System.Collections.Generic;
 
 [RequireComponent(typeof(NavMeshAgent))]
 public class PlayerControl : MonoBehaviour
@@ -19,12 +21,26 @@ public class PlayerControl : MonoBehaviour
     private int mapSize = 20;
     private int enemyDetectingArea = 25; // should be odd number
 
+    private int pathCount = 0;
+
     [SerializeField]
     private Gridpos currentTargetPosition = new Gridpos(0, 0);
+    private List<Gridpos> currentPath = new List<Gridpos>();
+
+    [SerializeField]
+    private Vector3 currentTargetPosition_Vec3 = new Vector3(0, 0, 0);
+
+    [SerializeField]
+    private Gridpos currentGridPosition = new Gridpos(0, 0);
 
     private void Awake()
     {
         Agent = GetComponent<NavMeshAgent>();
+    }
+
+    private void Start()
+    {
+        AStarPather.initialize();
     }
 
     private void Update()
@@ -56,6 +72,23 @@ public class PlayerControl : MonoBehaviour
 
         if (enemies != null)
         {
+            // if have path
+            if (currentPath.Count > 0 && pathCount < 5)
+            {
+                if (math.abs(currentTargetPosition_Vec3.x - gameObject.transform.position.x) <= 0.1f && math.abs(currentTargetPosition_Vec3.z - gameObject.transform.position.z) <= 0.1f)
+                {
+                    currentGridPosition = currentPath[0];
+                    currentPath.RemoveAt(0);
+                    currentTargetPosition_Vec3 = PositionConverter.GridPosToWorld(currentGridPosition);
+                    pathCount++;
+                }
+                Agent.SetDestination(currentTargetPosition_Vec3);
+                return;
+            }
+
+            //Debug.Log("Compute path");
+            AStarPather.ComputeNeighbor();
+
             for (int row = -(int)radius; row < radius + 1; row++)
             {
                 for (int col = -(int)radius; col < radius + 1; col++)
@@ -97,8 +130,18 @@ public class PlayerControl : MonoBehaviour
                 }
             }
 
-            currentTargetPosition = farthestGrid;
-            Agent.SetDestination(PositionConverter.GridPosToWorld(farthestGrid));
+            //currentTargetPosition = farthestGrid;
+            //Agent.SetDestination(PositionConverter.GridPosToWorld(farthestGrid));
+
+            currentPath.Clear();
+
+            currentPath = AStarPather.compute_path(playerGrisPos, farthestGrid);
+            currentGridPosition = new Gridpos(currentPath[0].posx, currentPath[0].posz);
+            currentPath.RemoveAt(0);
+            currentTargetPosition_Vec3 = PositionConverter.GridPosToWorld(currentGridPosition);
+            Agent.SetDestination(currentTargetPosition_Vec3);
+
+            pathCount = 0;
         }
     }
 }
