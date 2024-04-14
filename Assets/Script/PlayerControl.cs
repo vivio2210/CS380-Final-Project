@@ -86,7 +86,6 @@ public class PlayerControl : MonoBehaviour
                 return;
             }
 
-            //Debug.Log("Compute path");
             AStarPather.ComputeNeighbor();
 
             for (int row = -(int)radius; row < radius + 1; row++)
@@ -138,6 +137,12 @@ public class PlayerControl : MonoBehaviour
             currentPath = AStarPather.compute_path(playerGrisPos, farthestGrid);
             currentGridPosition = new Gridpos(currentPath[0].posx, currentPath[0].posz);
             currentPath.RemoveAt(0);
+
+            if(currentPath.Count > 0)
+            {
+                currentPath.Add(currentPath[currentPath.Count - 1]);
+            }
+
             currentTargetPosition_Vec3 = PositionConverter.GridPosToWorld(currentGridPosition);
             Agent.SetDestination(currentTargetPosition_Vec3);
 
