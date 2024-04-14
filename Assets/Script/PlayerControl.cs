@@ -33,6 +33,9 @@ public class PlayerControl : MonoBehaviour
     [SerializeField]
     private Gridpos currentGridPosition = new Gridpos(0, 0);
 
+    [SerializeField]
+    public Vector3 currentFacingDirection = new Vector3(0, 0, 1);
+
     private void Awake()
     {
         Agent = GetComponent<NavMeshAgent>();
@@ -46,19 +49,7 @@ public class PlayerControl : MonoBehaviour
     private void Update()
     {
         MoveToFarthestDistance();
-        //if (Input.GetKeyUp(KeyCode.Mouse0))
-        //{
-        //    Ray ray = Camera.ScreenPointToRay(Input.mousePosition);
-
-        //    if (Physics.RaycastNonAlloc(ray, Hits) > 0)
-        //    {
-        //        Agent.SetDestination(PositionConverter.GridPosToWorld(PositionConverter.WorldToGridPos(Hits[0].point)));
-        //    }
-        //}
-
-
-
-        //Debug.Log(gameObject.transform.forward.normalized);
+        SetFaceDirection();
     }
 
     private void MoveToFarthestDistance()
@@ -148,5 +139,11 @@ public class PlayerControl : MonoBehaviour
 
             pathCount = 0;
         }
+    }
+
+    private void SetFaceDirection()
+    {
+        currentGridPosition = PositionConverter.WorldToGridPos(gameObject.transform.position);
+        currentFacingDirection = new Vector3(currentTargetPosition_Vec3.x - currentGridPosition.posx, 0, currentTargetPosition_Vec3.z - currentGridPosition.posz).normalized;
     }
 }

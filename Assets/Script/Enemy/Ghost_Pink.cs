@@ -4,49 +4,12 @@ using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class Ghost_Pink : MonoBehaviour
+[CreateAssetMenu(fileName = "Ghost_Pink_SO", menuName = "ScriptableObjects/Ghost_Pink_SO")]
+public class Ghost_Pink : EnemyPathManager
 {
-    public Transform Player;
-    public float UpdateRate = 0.1f;
-    private NavMeshAgent Agent;
-
-    private Vector3 currentTargetPosition;
-
-    private void Awake()
+    public override Gridpos SelectTargetPostion(Transform playerPosition, Vector3 playerFaceDirection, Transform otherPosition = null)
     {
-        Agent = GetComponent<NavMeshAgent>();
-    }
-
-    private void Start()
-    {
-        StartCoroutine(FollowTarget());
-    }
-
-    private IEnumerator FollowTarget()
-    {
-        WaitForSeconds Wait = new WaitForSeconds(UpdateRate);
-        SetTargetPosition();
-
-        while (enabled)
-        {
-            //if (math.abs(gameObject.transform.position.x - currentTargetPosition.x) <= 1.0f && math.abs(gameObject.transform.position.z - currentTargetPosition.z) <= 1.0f)
-            //{
-            //    SetTargetPosition();
-            //    //Debug.Log("Get new target Location : " + currentTargetPosition);
-            //}
-            SetTargetPosition();
-            Agent.SetDestination(PositionConverter.WorldToWorld(currentTargetPosition));
-            yield return Wait;
-        }
-    }
-
-    private void SetTargetPosition()
-    {
-        currentTargetPosition = PositionConverter.WorldToWorld(Player.position + (4 * Player.forward.normalized));
-
-        //if (MapChecker.IsWall(PositionConverter.WorldToGridPos(currentTargetPosition)))
-        //{
-        //    currentTargetPosition = PositionConverter.GridPosToWorld(MapChecker.GetNearestGrid(PositionConverter.WorldToGridPos(currentTargetPosition)));
-        //}
+        Vector3 goal = playerPosition.position + 4 * playerFaceDirection;
+        return PositionConverter.WorldToGridPos(goal);
     }
 }

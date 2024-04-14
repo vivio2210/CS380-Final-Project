@@ -534,7 +534,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!136 &15626790
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -657,8 +657,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa134fe408f68ba4f8d8ca0ae0d6527e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Player: {fileID: 587367507}
-  UpdateRate: 1
 --- !u!43 &21047108
 Mesh:
   m_ObjectHideFlags: 0
@@ -7177,9 +7175,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aa6e0f76ab7f73a45b8b02eb8ae85704, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Player: {fileID: 587367507}
-  RedGhost: {fileID: 15626793}
-  UpdateRate: 1
 --- !u!43 &378509664
 Mesh:
   m_ObjectHideFlags: 0
@@ -12041,6 +12036,11 @@ MonoBehaviour:
   currentTargetPosition:
     posx: 0
     posz: 0
+  currentTargetPosition_Vec3: {x: 0, y: 0, z: 0}
+  currentGridPosition:
+    posx: 0
+    posz: 0
+  currentFacingDirection: {x: 0, y: 0, z: 1}
 --- !u!65 &587367510
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -14822,7 +14822,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!136 &793918137
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -14945,8 +14945,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 982a7a4841ad1e1449f1d2630af20c0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Player: {fileID: 587367507}
-  UpdateRate: 1
 --- !u!43 &810704801
 Mesh:
   m_ObjectHideFlags: 0
@@ -21617,8 +21615,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 962b560e404d846479bb647be0ffad7a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Player: {fileID: 587367507}
-  UpdateRate: 1
 --- !u!43 &1127158066
 Mesh:
   m_ObjectHideFlags: 0

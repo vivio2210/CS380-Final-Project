@@ -25,6 +25,14 @@ public class Gridpos
         return result;
     }
 
+    public static Gridpos operator -(Gridpos rhs1, Gridpos rhs2)
+    {
+        Gridpos result = new Gridpos(0, 0);
+        result.posx = rhs1.posx - rhs2.posx;
+        result.posz = rhs1.posz - rhs2.posz;
+        return result;
+    }
+
     //public static bool operator ==(Gridpos rhs1, Gridpos rhs2)
     //{
     //    return (rhs1.posx == rhs2.posz && rhs1.posz == rhs2.posz);

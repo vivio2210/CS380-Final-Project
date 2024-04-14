@@ -12,6 +12,7 @@ public class EnemyControl : MonoBehaviour
     private void Awake()
     {
         Agent = GetComponent<NavMeshAgent>();
+        AStarPather.initialize();
     }
 
     private void Start()

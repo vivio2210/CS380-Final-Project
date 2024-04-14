@@ -4,46 +4,19 @@ using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class Ghost_Orange : MonoBehaviour
+[CreateAssetMenu(fileName = "Ghost_Orange_SO", menuName = "ScriptableObjects/Ghost_Orange_SO")]
+public class Ghost_Orange : EnemyPathManager
 {
-    public Transform Player;
-    public float UpdateRate = 0.1f;
-    private NavMeshAgent Agent;
-
-    private Vector3 currentTargetPosition;
-
-    private void Awake()
+    public override Gridpos SelectTargetPostion(Transform playerPosition, Vector3 playerFaceDirection, Transform otherPosition = null)
     {
-        Agent = GetComponent<NavMeshAgent>();
-    }
-
-    private void Start()
-    {
-        StartCoroutine(FollowTarget());
-    }
-
-    private IEnumerator FollowTarget()
-    {
-        WaitForSeconds Wait = new WaitForSeconds(UpdateRate);
-
-        while (enabled)
+        float distance = math.pow(otherPosition.position.x - playerPosition.position.x,2) + math.pow(otherPosition.position.z - playerPosition.position.z, 2);
+        if (distance > 64.0f)
         {
-            SetTargetPosition();
-            Agent.SetDestination(currentTargetPosition);
-            yield return Wait;
-        }
-    }
-
-    private void SetTargetPosition()
-    {
-        float distance = math.sqrt(math.pow(gameObject.transform.position.x - Player.position.x,2) + math.pow(gameObject.transform.position.z - Player.position.z,2));
-        if (distance > 8)
-        {
-            currentTargetPosition = PositionConverter.WorldToWorld(Player.position);
+            return PositionConverter.WorldToGridPos(playerPosition.position);
         }
         else
         {
-            currentTargetPosition = new Vector3(18.5f, 1, 19.5f);
+            return new Gridpos(18, 19);
         }
     }
 }

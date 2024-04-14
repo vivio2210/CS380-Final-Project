@@ -527,14 +527,14 @@ GameObject:
   - component: {fileID: 15626792}
   - component: {fileID: 15626791}
   - component: {fileID: 15626790}
-  - component: {fileID: 15626796}
+  - component: {fileID: 15626795}
   m_Layer: 7
   m_Name: GhostRed
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!136 &15626790
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -645,7 +645,7 @@ NavMeshAgent:
   m_BaseOffset: 1
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
---- !u!114 &15626796
+--- !u!114 &15626795
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -654,11 +654,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 15626789}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fa134fe408f68ba4f8d8ca0ae0d6527e, type: 3}
+  m_Script: {fileID: 11500000, guid: 1c7dbe48bef72024193b9385cdf41291, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Player: {fileID: 587367507}
-  UpdateRate: 1
+  player: {fileID: 587367507}
+  otherEnemy: {fileID: 15626793}
+  playerControl: {fileID: 587367509}
+  pathManager: {fileID: 11400000, guid: 744fd34e6bce07a4c8372f6a873d5ec3, type: 2}
+  stepBeforeCompute: 5
+  stepCount: 0
 --- !u!43 &21047108
 Mesh:
   m_ObjectHideFlags: 0
@@ -7054,7 +7058,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!136 &361867632
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -7174,12 +7178,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 361867630}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aa6e0f76ab7f73a45b8b02eb8ae85704, type: 3}
+  m_Script: {fileID: 11500000, guid: 1c7dbe48bef72024193b9385cdf41291, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Player: {fileID: 587367507}
-  RedGhost: {fileID: 15626793}
-  UpdateRate: 1
+  player: {fileID: 587367507}
+  otherEnemy: {fileID: 15626793}
+  playerControl: {fileID: 587367509}
+  pathManager: {fileID: 11400000, guid: 6f6922c9e21ee084eb14b5ab68867540, type: 2}
+  stepBeforeCompute: 10
+  stepCount: 0
 --- !u!43 &378509664
 Mesh:
   m_ObjectHideFlags: 0
@@ -11911,7 +11918,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 2147483647
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!136 &587367504
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -12035,10 +12042,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Camera: {fileID: 963194227}
-  enemies: []
+  enemies:
+  - {fileID: 15626789}
+  - {fileID: 793918135}
+  - {fileID: 361867630}
+  - {fileID: 1127056751}
   currentTargetPosition:
     posx: 0
     posz: 0
+  currentTargetPosition_Vec3: {x: 0, y: 0, z: 0}
+  currentGridPosition:
+    posx: 0
+    posz: 0
+  currentFacingDirection: {x: 0, y: 0, z: 1}
 --- !u!65 &587367510
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -13585,37 +13601,6 @@ MonoBehaviour:
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
   m_SoftShadowQuality: 0
---- !u!1 &732929087
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 732929088}
-  m_Layer: 0
-  m_Name: Tester
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &732929088
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 732929087}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &734554999
 GameObject:
   m_ObjectHideFlags: 0
@@ -14851,7 +14836,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!136 &793918137
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -14971,11 +14956,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 793918135}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 982a7a4841ad1e1449f1d2630af20c0c, type: 3}
+  m_Script: {fileID: 11500000, guid: 1c7dbe48bef72024193b9385cdf41291, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Player: {fileID: 587367507}
-  UpdateRate: 1
+  player: {fileID: 587367507}
+  otherEnemy: {fileID: 793918142}
+  playerControl: {fileID: 587367509}
+  pathManager: {fileID: 11400000, guid: 829b541ffad8a73468502cc1f18371a4, type: 2}
+  stepBeforeCompute: 10
+  stepCount: 0
 --- !u!43 &810704801
 Mesh:
   m_ObjectHideFlags: 0
@@ -21523,7 +21512,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!136 &1127056753
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -21643,11 +21632,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 1127056751}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 962b560e404d846479bb647be0ffad7a, type: 3}
+  m_Script: {fileID: 11500000, guid: 1c7dbe48bef72024193b9385cdf41291, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Player: {fileID: 587367507}
-  UpdateRate: 1
+  player: {fileID: 587367507}
+  otherEnemy: {fileID: 1127056758}
+  playerControl: {fileID: 587367509}
+  pathManager: {fileID: 11400000, guid: c9d32f1a80f05b047b86d4c088197339, type: 2}
+  stepBeforeCompute: 10
+  stepCount: 0
 --- !u!43 &1127158066
 Mesh:
   m_ObjectHideFlags: 0
@@ -30457,7 +30450,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!64 &1462598240
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -32347,7 +32340,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!64 &1615570063
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -41734,7 +41727,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 2147483647
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!195 &2134953477
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -41835,14 +41828,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Camera: {fileID: 963194227}
-  currentTargetPosition: {x: 0, y: 0, z: 0}
   currentGridPosition:
     posx: 0
     posz: 0
-  StartX: 0
-  StartZ: 0
-  GoalX: 0
-  GoalZ: 0
+  currentTargetGridPosition:
+    posx: 0
+    posz: 0
+  currentFacingDirection: {x: 0, y: 0, z: 0}
 --- !u!1 &2138686867
 GameObject:
   m_ObjectHideFlags: 0
@@ -42636,5 +42628,4 @@ SceneRoots:
   - {fileID: 793918142}
   - {fileID: 361867637}
   - {fileID: 1127056758}
-  - {fileID: 732929088}
   - {fileID: 2134953481}

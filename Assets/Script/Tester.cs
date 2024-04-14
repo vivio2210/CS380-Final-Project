@@ -14,43 +14,22 @@ public class Tester : MonoBehaviour
 
     private List<Gridpos> currentPath = new List<Gridpos>();
 
-    [SerializeField]
     private Vector3 currentTargetPosition = new Vector3(0, 0, 0);
 
     [SerializeField]
     private Gridpos currentGridPosition = new Gridpos(0, 0);
 
     [SerializeField]
-    private int StartX = 0;
-    [SerializeField]
-    private int StartZ = 0;
+    private Gridpos currentTargetGridPosition = new Gridpos(0, 0);
 
     [SerializeField]
-    private int GoalX = 0;
-    [SerializeField]
-    private int GoalZ = 0;
+    private Vector3 currentFacingDirection = new Vector3(0, 0, 1);
 
-    private void Start()
-    {
-        AStarPather.initialize();
-    }
-
-    [ContextMenu("ComputePath")]
-    public void ComputePath()
-    {
-        Gridpos start = new Gridpos(StartX, StartZ);
-        Gridpos goal = new Gridpos(GoalX, GoalZ);
-        List<Gridpos> result = AStarPather.compute_path(start, goal);
-        for (int i = 0; i < result.Count; i++)
-        {
-            Debug.Log("(" + result[i].posx + ", " + result[i].posz + ")");
-        }
-    }
     private void Awake()
     {
         Agent = GetComponent<NavMeshAgent>();
+        AStarPather.initialize();
     }
-
     private void Update()
     {
         if (Input.GetKeyUp(KeyCode.Mouse0))
@@ -60,10 +39,16 @@ public class Tester : MonoBehaviour
             if (Physics.RaycastNonAlloc(ray, Hits) > 0)
             {
                 currentPath = AStarPather.compute_path(PositionConverter.WorldToGridPos(gameObject.transform.position), PositionConverter.WorldToGridPos(Hits[0].point));
-                currentGridPosition = new Gridpos(currentPath[0].posx, currentPath[0].posz);
-                currentPath.RemoveAt(0);
-                currentTargetPosition = PositionConverter.GridPosToWorld(currentGridPosition);
-                Agent.SetDestination(currentTargetPosition);
+                if (currentPath.Count > 0)
+                {
+                    currentTargetGridPosition = new Gridpos(currentPath[0].posx, currentPath[0].posz);
+                    currentPath.RemoveAt(0);
+                    currentTargetPosition = PositionConverter.GridPosToWorld(currentTargetGridPosition);
+                    Agent.SetDestination(currentTargetPosition);
+
+                    currentGridPosition = PositionConverter.WorldToGridPos(gameObject.transform.position);
+                    currentFacingDirection = new Vector3(currentTargetGridPosition.posx - currentGridPosition.posx, 0, currentTargetGridPosition.posz - currentGridPosition.posz).normalized;
+                }
             }
         }
 
@@ -71,9 +56,12 @@ public class Tester : MonoBehaviour
         {
             if (math.abs(currentTargetPosition.x - gameObject.transform.position.x) <= 0.1f && math.abs(currentTargetPosition.z - gameObject.transform.position.z) <= 0.1f)
             {
-                currentGridPosition = currentPath[0];
+                currentTargetGridPosition = currentPath[0];
                 currentPath.RemoveAt(0);
-                currentTargetPosition = PositionConverter.GridPosToWorld(currentGridPosition);
+                currentTargetPosition = PositionConverter.GridPosToWorld(currentTargetGridPosition);
+
+                currentGridPosition = PositionConverter.WorldToGridPos(gameObject.transform.position);
+                currentFacingDirection = new Vector3(currentTargetGridPosition.posx - currentGridPosition.posx, 0, currentTargetGridPosition.posz - currentGridPosition.posz).normalized;
             }
             Agent.SetDestination(currentTargetPosition);
         }
