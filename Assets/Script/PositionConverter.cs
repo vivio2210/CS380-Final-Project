@@ -88,26 +88,25 @@ public class MapChecker
         return true;
     }
 
-    //public static Gridpos GetNearestGrid(Gridpos gridpos)
-    //{
-    //    Gridpos result = new Gridpos(0,0);
-    //    int radius = 1;
-    //    while (true)
-    //    {
-    //        for (int i = -radius; i < radius; i++)
-    //        {
-    //            for (int j = -radius; j < radius; j++)
-    //            {
-    //                result.posx = gridpos.posx + i;
-    //                result.posz = gridpos.posz + j;
-    //                if (!IsWall(result))
-    //                {
-    //                    break;
-    //                }
-    //            }
-    //        }
-    //        radius++;
-    //    }
-    //    return result;
-    //}
+    public static bool IsWallOrEnemy(Gridpos gridpos)
+    {
+        RaycastHit hit;
+        Vector3 position = PositionConverter.GridPosToWorld(gridpos);
+        position.y = 2;
+        Vector3 direction = new Vector3(0, -1, 0);
+
+        if (Physics.Raycast(position, direction, out hit, Mathf.Infinity))
+        {
+            if (hit.transform.gameObject.tag == "Floor")
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        return true;
+    }
 }

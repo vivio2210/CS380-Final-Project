@@ -4,7 +4,7 @@ using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class EnemyControler : MonoBehaviour
+public class EnemyControler : MoveableAgent
 {
     public Transform player;
     public Transform otherEnemy;
@@ -12,19 +12,18 @@ public class EnemyControler : MonoBehaviour
     public PlayerControl playerControl;
     public EnemyPathManager pathManager;
 
-    private NavMeshAgent Agent;
+    [SerializeField]
     private Gridpos finalTargetPosition = new Gridpos(0,0);
     private List<Gridpos> paths = new List<Gridpos>();
+    [SerializeField]
     private Vector3 currentTargetPosition;
 
     [SerializeField]
     private int stepBeforeCompute = 10;
-    [SerializeField]
     private int stepCount = 0;
 
     private void Awake()
     {
-        Agent = GetComponent<NavMeshAgent>();
         AStarPather.initialize();
     }
 
@@ -32,16 +31,6 @@ public class EnemyControler : MonoBehaviour
     {
         SetNewTargetPosition();
     }
-
-    //private IEnumerator FollowTarget()
-    //{
-    //    WaitForSeconds Wait = new WaitForSeconds(UpdateRate);
-    //    while (enabled)
-    //    {
-    //        MoveToNextPosition();
-    //        yield return Wait;
-    //    }
-    //}
 
     private void Update()
     {
@@ -53,9 +42,12 @@ public class EnemyControler : MonoBehaviour
         finalTargetPosition = pathManager.SelectTargetPostion(player, playerControl.currentFacingDirection, otherEnemy);
         paths = AStarPather.compute_path(PositionConverter.WorldToGridPos(gameObject.transform.position), finalTargetPosition);
 
-        currentTargetPosition = PositionConverter.GridPosToWorld(paths[0]);
-        paths.RemoveAt(0);
-        Agent.SetDestination(currentTargetPosition);
+        // if imposible not move
+        if (paths.Count > 0)
+        {
+            currentTargetPosition = PositionConverter.GridPosToWorld(paths[0]);
+            base.SetDestination(currentTargetPosition);
+        }
     }
 
     private void MoveToNextPosition()
@@ -70,16 +62,18 @@ public class EnemyControler : MonoBehaviour
         {
             if (math.abs(currentTargetPosition.x - gameObject.transform.position.x) <= 0.1f && math.abs(currentTargetPosition.z - gameObject.transform.position.z) <= 0.1f)
             {
+                if (paths.Count != 1)
+                    paths.RemoveAt(0);
                 currentTargetPosition = PositionConverter.GridPosToWorld(paths[0]);
-                paths.RemoveAt(0);
                 stepCount++;
             }
-            Agent.SetDestination(currentTargetPosition);
         }
         else 
         {
             SetNewTargetPosition();
             stepCount = 0;
         }
+        base.SetDestination(currentTargetPosition);
+
     }
 }

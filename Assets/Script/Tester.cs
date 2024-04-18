@@ -4,11 +4,10 @@ using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class Tester : MonoBehaviour
+public class Tester : MoveableAgent
 {
     [SerializeField]
     private Camera Camera = null;
-    private NavMeshAgent Agent;
 
     private RaycastHit[] Hits = new RaycastHit[1];
 
@@ -27,8 +26,8 @@ public class Tester : MonoBehaviour
 
     private void Awake()
     {
-        Agent = GetComponent<NavMeshAgent>();
         AStarPather.initialize();
+        currentTargetPosition = transform.position;
     }
     private void Update()
     {
@@ -44,7 +43,7 @@ public class Tester : MonoBehaviour
                     currentTargetGridPosition = new Gridpos(currentPath[0].posx, currentPath[0].posz);
                     currentPath.RemoveAt(0);
                     currentTargetPosition = PositionConverter.GridPosToWorld(currentTargetGridPosition);
-                    Agent.SetDestination(currentTargetPosition);
+                    base.SetDestination(currentTargetPosition);
 
                     currentGridPosition = PositionConverter.WorldToGridPos(gameObject.transform.position);
                     currentFacingDirection = new Vector3(currentTargetGridPosition.posx - currentGridPosition.posx, 0, currentTargetGridPosition.posz - currentGridPosition.posz).normalized;
@@ -63,8 +62,9 @@ public class Tester : MonoBehaviour
                 currentGridPosition = PositionConverter.WorldToGridPos(gameObject.transform.position);
                 currentFacingDirection = new Vector3(currentTargetGridPosition.posx - currentGridPosition.posx, 0, currentTargetGridPosition.posz - currentGridPosition.posz).normalized;
             }
-            Agent.SetDestination(currentTargetPosition);
+            base.SetDestination(currentTargetPosition);
         }
+        base.SetDestination(currentTargetPosition);
     }
 
 }

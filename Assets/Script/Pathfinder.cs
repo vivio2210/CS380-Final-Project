@@ -56,10 +56,13 @@ public class AStarPather
 
     private static List<GridNode> openlist = new List<GridNode>();
     private static float ROOT2 = 1.414213f;
+
+    public static GridNode[,] player_GridNodes = new GridNode[20, 20];
     public static bool initialize()
     {
         InitGridNode();
         ComputeNeighbor();
+        PlayerComputeNeighbor();
         return true; 
     }
     private static int FindCheapestNodeIndex()
@@ -76,20 +79,31 @@ public class AStarPather
         }
         return index;
     }
-    public static List<Gridpos> compute_path(Gridpos start, Gridpos goal)
+    public static List<Gridpos> compute_path(Gridpos start, Gridpos goal, bool isPlayer = false)
     {
         List<Gridpos> pathResult = new List<Gridpos>();
 
         if (MapChecker.IsWall(goal))
         {
-            Debug.Log("IMPOSSIBLE");
+            //Debug.Log("IMPOSSIBLE");
             return new List<Gridpos>();
         }
         ClearGridNode();
-        gridNodes[start.posx, start.posz].onlist = Nodelist.E_OPENLIST;
-        gridNodes[start.posx, start.posz].calurateFinalCost(goal, 0);
-        gridNodes[start.posx, start.posz].parent = null;
-        openlist.Add(gridNodes[start.posx,start.posz]);
+        if (isPlayer)
+        {
+            player_GridNodes[start.posx, start.posz].onlist = Nodelist.E_OPENLIST;
+            player_GridNodes[start.posx, start.posz].calurateFinalCost(goal, 0);
+            player_GridNodes[start.posx, start.posz].parent = null;
+            openlist.Add(player_GridNodes[start.posx, start.posz]);
+        }
+        else
+        {
+            gridNodes[start.posx, start.posz].onlist = Nodelist.E_OPENLIST;
+            gridNodes[start.posx, start.posz].calurateFinalCost(goal, 0);
+            gridNodes[start.posx, start.posz].parent = null;
+            openlist.Add(gridNodes[start.posx, start.posz]);
+        }
+
 
         while (openlist.Count > 0)
         {
@@ -113,7 +127,11 @@ public class AStarPather
                 if (parentNode.neighbors[i])
                 {
                     Gridpos childpos = parentNode.gridPos + surroundNeighbors[i];
-                    GridNode childNode = gridNodes[childpos.posx,childpos.posz];
+                    GridNode childNode = gridNodes[childpos.posx, childpos.posz];
+                    if (isPlayer)
+                    {
+                        childNode = player_GridNodes[childpos.posx, childpos.posz];
+                    }   
                     if (childNode.onlist == Nodelist.E_NONELIST)
                     {
                         if (i == 0 || i == 2 || i == 5 || i == 7) // is diaganal
@@ -158,7 +176,7 @@ public class AStarPather
                 }
             }
         }
-        Debug.Log("IMPOSSIBLE");
+        //Debug.Log("IMPOSSIBLE");
         return new List<Gridpos>();
     }
     public static void InitGridNode()
@@ -170,6 +188,7 @@ public class AStarPather
         {
             for (int i = 0; i < height; i++)
             {
+                player_GridNodes[i, j] = new GridNode(i, j);
                 gridNodes[i,j] = new GridNode(i, j);
             }
         }
@@ -231,6 +250,62 @@ public class AStarPather
         }
     }
 
+    public static void PlayerComputeNeighbor()
+    {
+        int width = 20;
+        int height = 20;
+
+        for (int j = 0; j < width; j++)
+        {
+            for (int i = 0; i < height; i++)
+            {
+                for (int k = 0; k < 8; k++)
+                {
+                    Gridpos neighborPos = new Gridpos(0, 0);
+                    neighborPos.posx = player_GridNodes[i, j].gridPos.posx + surroundNeighbors[k].posx;
+                    neighborPos.posz = player_GridNodes[i, j].gridPos.posz + surroundNeighbors[k].posz;
+                    if (neighborPos.posz >= 0 && neighborPos.posz < height && neighborPos.posx >= 0 && neighborPos.posx < width)
+                    {
+                        if (MapChecker.IsWallOrEnemy(neighborPos))
+                        {
+                            player_GridNodes[i, j].neighbors[k] = false;
+                        }
+                        else
+                        {
+                            player_GridNodes[i, j].neighbors[k] = true;
+                        }
+                    }
+                    else
+                    {
+                        player_GridNodes[i, j].neighbors[k] = false;
+                    }
+                }
+
+                if (player_GridNodes[i, j].neighbors[1] == false)
+                {
+                    player_GridNodes[i, j].neighbors[0] = false;
+                    player_GridNodes[i, j].neighbors[2] = false;
+                }
+                if (player_GridNodes[i, j].neighbors[3] == false)
+                {
+                    player_GridNodes[i, j].neighbors[0] = false;
+                    player_GridNodes[i, j].neighbors[5] = false;
+                }
+                if (player_GridNodes[i, j].neighbors[4] == false)
+                {
+                    player_GridNodes[i, j].neighbors[2] = false;
+                    player_GridNodes[i, j].neighbors[7] = false;
+                }
+                if (player_GridNodes[i, j].neighbors[6] == false)
+                {
+                    player_GridNodes[i, j].neighbors[5] = false;
+                    player_GridNodes[i, j].neighbors[7] = false;
+                }
+
+            }
+        }
+    }
+
     private static void ClearGridNode()
     {
         int width = 20;
@@ -242,6 +317,7 @@ public class AStarPather
         {
             for (int i = 0; i < height; i++)
             {
+                player_GridNodes[i, j].onlist = Nodelist.E_NONELIST;
                 gridNodes[i,j].onlist = Nodelist.E_NONELIST;
             }
         }
