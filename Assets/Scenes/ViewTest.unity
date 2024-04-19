@@ -19164,6 +19164,11 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 7
       objectReference: {fileID: 0}
+    - target: {fileID: 1761589806286942128, guid: a6631742f9bb54b48850313f42c224b3,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2260984602027874741, guid: a6631742f9bb54b48850313f42c224b3,
         type: 3}
       propertyPath: speed
@@ -20573,7 +20578,7 @@ PrefabInstance:
     - target: {fileID: 3547534664829354887, guid: 0b5f06769ba8b8f4f80f22410eb22df8,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3902812073873683842, guid: 0b5f06769ba8b8f4f80f22410eb22df8,
         type: 3}
@@ -23378,7 +23383,7 @@ PrefabInstance:
     - target: {fileID: 2515806039516012808, guid: 655ca791b5d86384abdf96bbc2f56176,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2736848677341697805, guid: 655ca791b5d86384abdf96bbc2f56176,
         type: 3}
@@ -34340,7 +34345,7 @@ PrefabInstance:
     - target: {fileID: 5649942028700400021, guid: 194442435371f6745b5a7a6e32c9b78c,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -42300,13 +42305,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 4
   Camera: {fileID: 1345255967}
-  currentGridPosition:
-    posx: 0
-    posz: 0
-  currentTargetGridPosition:
-    posx: 0
-    posz: 0
-  currentFacingDirection: {x: 0, y: 0, z: 0}
 --- !u!23 &2093412610
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -43647,7 +43645,7 @@ Mesh:
     offset: 0
     size: 0
     path: 
---- !u!1001 &9092230408714975618
+--- !u!1001 &9144609771284340513
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -43663,17 +43661,17 @@ PrefabInstance:
     - target: {fileID: 1104309284202220272, guid: 7fd0f8395e9534e40a34af7aca55b267,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -29.500002
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1104309284202220272, guid: 7fd0f8395e9534e40a34af7aca55b267,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 4
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 1104309284202220272, guid: 7fd0f8395e9534e40a34af7aca55b267,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -1.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1104309284202220272, guid: 7fd0f8395e9534e40a34af7aca55b267,
         type: 3}
@@ -43729,4 +43727,4 @@ SceneRoots:
   - {fileID: 1182845073}
   - {fileID: 1061856479}
   - {fileID: 2093412612}
-  - {fileID: 9092230408714975618}
+  - {fileID: 9144609771284340513}

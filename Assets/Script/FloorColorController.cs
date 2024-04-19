@@ -26,11 +26,11 @@ public class FloorColorController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //if (Input.GetKeyDown(KeyCode.Space))
-        //{
-        //    Color color = new Color(1f, 0.5f, 0.5f);
-        //    ChangeFloorColor(1, 0, color);
-        //}
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            Color color = new Color(1f, 0.5f, 0.5f);
+            ChangeFloorColor(1, 0, color);
+        }
     }
 
     public void ChangeFloorColor(int row, int col, Color color)
