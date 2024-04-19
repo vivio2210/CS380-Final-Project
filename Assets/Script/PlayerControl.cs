@@ -43,6 +43,7 @@ public class PlayerControl : MoveableAgent
     private void Start()
     {
         AStarPather.initialize();
+        updateEnemyInScene();
     }
 
     private void Update()
@@ -146,5 +147,19 @@ public class PlayerControl : MoveableAgent
         Gridpos goalPositon = PositionConverter.WorldToGridPos(currentTargetPosition_Vec3);
 
         currentFacingDirection = new Vector3(playerPositon.posx - goalPositon.posx, 0, playerPositon.posz - goalPositon.posz).normalized;
+    }
+    public void updateEnemyInScene() // Use this function every time you increase or decrease the number of enemies.
+    {
+        enemies = GameObject.FindGameObjectsWithTag("Enemy");
+    }
+
+    public int GetPlayerStep()
+    {
+        return stepBeforeCompute;
+    }
+
+    public void SetPlayerStep(int playerStep)
+    {
+        stepBeforeCompute = playerStep;
     }
 }
