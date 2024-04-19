@@ -15,8 +15,8 @@ public class Ghost_Cooperative : EnemyPathManager
     [SerializeField]
     private int wanderRadius = 2;
 
-    private Enemy_State mode = Enemy_State.ES_WANDER;
-    public override Gridpos SelectTargetPostion(Transform playerPosition, Vector3 playerFaceDirection, Transform selfPosition, Vector3 otherPosition)
+    public override Gridpos SelectTargetPostion(Transform playerPosition, Vector3 playerFaceDirection, 
+        Transform selfPosition, Vector3 otherPosition, Enemy_State mode)
     {
         //Debug.Log(mode);
         if (mode == Enemy_State.ES_WANDER)
@@ -36,11 +36,6 @@ public class Ghost_Cooperative : EnemyPathManager
             return Wander(playerPosition, selfPosition);
         }
 
-    }
-
-    public override void SetMode(Enemy_State state)
-    {
-        mode = state;
     }
 
     private Gridpos Wander(Transform playerPosition, Transform selfPosition)

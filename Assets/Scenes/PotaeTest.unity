@@ -4469,11 +4469,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: GhostCooperative
       objectReference: {fileID: 0}
-    - target: {fileID: 7986893522650296243, guid: dd7e307a9f0a8284a807c4ea93751609,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -18875,7 +18870,8 @@ MonoBehaviour:
     posz: -1
   player: {fileID: 587367507}
   enemyAgents: []
-  enemyColor: {r: 1, g: 0, b: 0, a: 0}
+  enemiesAssigned: 
+  enemyColor: {r: 0.0066566467, g: 0, b: 1, a: 0}
   playerColor: {r: 0.13308239, g: 1, b: 0, a: 0}
 --- !u!43 &1041125235
 Mesh:

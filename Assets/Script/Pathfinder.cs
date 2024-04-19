@@ -57,7 +57,7 @@ public class AStarPather
 
     private static List<GridNode> openlist = new List<GridNode>();
 
-    private static List<Gridpos> branchTrackLists = new List<Gridpos>();
+    public static List<Gridpos> branchTrackLists = new List<Gridpos>();
 
     private static float ROOT2 = 1.414213f;
 
@@ -357,28 +357,50 @@ public class AStarPather
 
     public static bool IsClearPath(Gridpos start, Gridpos goal)
     {
-        RaycastHit hit;
-        Vector3 position = PositionConverter.GridPosToWorld(start);
-        Vector3 direction = PositionConverter.GridPosToWorld(goal) - PositionConverter.GridPosToWorld(start);
+        int Xmin = math.min(start.posx, goal.posx);
+        int Zmin = math.min(start.posz, goal.posz);
+        int Xmax = math.max(start.posx, goal.posx);
+        int Zmax = math.max(start.posz, goal.posz);
 
-        if (Physics.Raycast(position, direction.normalized, out hit, Mathf.Infinity))
+        for (int i = Xmin; i <= Xmax; i++)
         {
-            if (hit.transform.tag == "Wall")
+            for (int j = Zmin; j <= Zmax; j++)
             {
-                return true;
-            }
-            else
-            {
-                return false;
+                if(MapChecker.IsWall(i,j))
+                {
+                    return false;
+                }
             }
         }
 
-        return false;
+        return true;
+
+        //RaycastHit hit;
+        //Vector3 position = PositionConverter.GridPosToWorld(start);
+        //Vector3 direction = PositionConverter.GridPosToWorld(goal) - PositionConverter.GridPosToWorld(start);
+
+        //if (Physics.Raycast(position, direction.normalized, out hit, Mathf.Infinity))
+        //{
+        //    if (hit.transform.tag == "Wall")
+        //    {
+        //        return true;
+        //    }
+        //    else
+        //    {
+        //        return false;
+        //    }
+        //}
+
+        //return false;
+
+
     }
 
     public static float FindDistance(int x1, int z1, int x2, int z2)
     {
-        return (float)math.sqrt(math.pow(x1 - x2, 2) + math.pow(z1 - z2, 2));
+        int xDiff = math.abs(x1 - x2);
+        int yDiff = math.abs(z1 - z2);
+        return (float)((math.min(xDiff, yDiff) * ROOT2) + math.max(xDiff, yDiff) - math.min(xDiff, yDiff));
     }
     public static Gridpos GetNearestBranchTrack(Gridpos start)
     {
@@ -394,15 +416,6 @@ public class AStarPather
             }
         }
         return branchTrackLists[index];
-    }
-
-    public static void Test()
-    {
-        for (int i = 0; i < branchTrackLists.Count; i++)
-        {
-            FloorColorController.GetInstance.ChangeFloorColor(branchTrackLists[i].posx, branchTrackLists[i].posz,
-                new Color(0,0,1,1));
-        }
     }
 
     public static List<Gridpos> GetRoomGrid(Gridpos start)

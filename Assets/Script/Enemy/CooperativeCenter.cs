@@ -30,6 +30,8 @@ public class CooperativeCenter : MonoBehaviour
     [SerializeField]
     public Color playerColor;
 
+    private FloorColorController floorColorController;
+
     //public void SetPlayerPosition(Gridpos playerPos)
     //{
     //    lastSeenPlayerPosition = playerPos;
@@ -41,45 +43,90 @@ public class CooperativeCenter : MonoBehaviour
 
     public void Start()
     {
+        floorColorController = FindObjectOfType<FloorColorController>();
         enemyAgents = FindObjectsOfType<EnemyControler>();
         enemiesAssigned = new bool[enemyAgents.Length];
         ClearEnemiesAssigned();
-        AStarPather.Test();
+        //AStarPather.Test();
     }
 
     public void Update()
     {
-        //FloorColorController.GetInstance.ClearColor();
+        floorColorController.ClearColor();
         //AStarPather.Test();
-        //List<Gridpos> doors = AStarPather.GetDoorRoomGrid(PositionConverter.WorldToGridPos(player.position));
-        //Gridpos temp;
-        //for (int i = 0; i < rooms.Count; i++)
-        //{
-        //    temp = rooms[i];
-        //    FloorColorController.GetInstance.ChangeFloorColor(temp.posx, temp.posz, playerColor);
-        //}
+        List<Gridpos> doors = AStarPather.GetDoorRoomGrid(PositionConverter.WorldToGridPos(player.position));
+        Gridpos temp;
+
+        for (int i = 0; i < AStarPather.branchTrackLists.Count; i++)
+        {
+            temp = AStarPather.branchTrackLists[i];
+            floorColorController.ChangeFloorColor(temp.posx, temp.posz, new Color(0,0,1,1));
+        }
+        for (int i = 0; i < doors.Count; i++)
+        {
+            temp = doors[i];
+            floorColorController.ChangeFloorColor(temp.posx, temp.posz, playerColor);
+        }
     }
 
     public void SetLastSeenPlayerPosition(Gridpos pos)
     {
         lastSeenPlayerPosition = pos;
-        for (int i = 0; i < enemyAgents.Length; i++)
-        {
-            //enemyAgents[i].SetMode(Enemy_State.ES_WANDER);
-        }
+        AssignTasks();
     }
 
     public void AssignTasks()
     {
-        List<Gridpos> doors = AStarPather.GetDoorRoomGrid(PositionConverter.WorldToGridPos(player.position));
-
+        ClearEnemiesAssigned();
+        int index = -1;
+        float currentdistance = 5000;
+        Gridpos playerPos = PositionConverter.WorldToGridPos(player.transform.position);
         for (int i = 0; i < enemyAgents.Length; i++)
         {
-            if(enemiesAssigned[i] == true)
-            { 
-                continue; 
+            Gridpos enemyPos = PositionConverter.WorldToGridPos(enemyAgents[i].gameObject.transform.position);
+            float distance = AStarPather.FindDistance(enemyPos.posx, enemyPos.posz, playerPos.posx, playerPos.posz);
+            if (distance < currentdistance)
+            {
+                currentdistance = distance;
+                index = i;
             }
-
+        }
+        enemyAgents[index].SetMode(Enemy_State.ES_CHASE);
+        enemiesAssigned[index] = true;
+        List<Gridpos> doors = AStarPather.GetDoorRoomGrid(PositionConverter.WorldToGridPos(player.position));
+        for (int i = 0; i < doors.Count; i++)
+        {
+            index = -1;
+            currentdistance = 5000;
+            playerPos = doors[i];
+            for (int j = 0; j < enemyAgents.Length; j++)
+            {
+                if (enemiesAssigned[j] == true)
+                {
+                    continue;
+                }
+                Gridpos enemyPos = PositionConverter.WorldToGridPos(enemyAgents[j].gameObject.transform.position);
+                float distance = AStarPather.FindDistance(enemyPos.posx, enemyPos.posz, playerPos.posx, playerPos.posz);
+                if (distance < currentdistance)
+                {
+                    currentdistance = distance;
+                    index = j;
+                }
+            }
+            if (index != -1)
+            {
+                enemyAgents[index].otherPosition = PositionConverter.GridPosToWorld(doors[i]);
+                enemyAgents[index].SetMode(Enemy_State.ES_CORNER);
+                enemiesAssigned[index] = true;
+            }
+        }
+        for (int i = 0; i < enemyAgents.Length; i++)
+        {
+            if (enemiesAssigned[i] == true)
+            {
+                continue;
+            }
+            enemyAgents[i].SetMode(Enemy_State.ES_WANDER);
         }
     }
 

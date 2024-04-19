@@ -1,9 +1,11 @@
 using Sirenix.OdinInspector;
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.AI;
+using static UnityEngine.Rendering.DebugUI.Table;
 
 public class EnemyControler : MoveableAgent
 {
@@ -31,6 +33,17 @@ public class EnemyControler : MoveableAgent
     [Header("Cooperative Setting")]
     [SerializeField]
     public bool useCooperative = false;
+    [SerializeField]
+    public Enemy_State currentState = Enemy_State.ES_WANDER;
+    [SerializeField]
+    public UnityEngine.Color wanderColor = UnityEngine.Color.white;
+    [SerializeField]
+    public UnityEngine.Color chaseColor = UnityEngine.Color.white;
+    [SerializeField]
+    public UnityEngine.Color CornerColor = UnityEngine.Color.white;
+
+
+    private int firstStep = 0;
 
     private void Awake()
     {
@@ -42,31 +55,49 @@ public class EnemyControler : MoveableAgent
         SetNewTargetPosition();
         if (useCooperative)
         {
-            pathManager.SetMode(Enemy_State.ES_CORNER);
+            SetMode(Enemy_State.ES_WANDER);
         }
-        StartCoroutine(TargetTimer());
+        //StartCoroutine(TargetTimer());
     }
 
     private void Update()
     {
         MoveToNextPosition();
+        //if(useCooperative)
+        //{
+        //    if (Input.GetKeyDown(KeyCode.O))
+        //    {
+        //        SetMode(Enemy_State.ES_CHASE);
+        //    }
+        //    if (Input.GetKeyDown(KeyCode.P))
+        //    {
+        //        SetMode(Enemy_State.ES_WANDER);
+        //    }
+        //    if (Input.GetKeyDown(KeyCode.I))
+        //    {
+        //        SetMode(Enemy_State.ES_CORNER);
+        //    }
+        //}
     }
 
     private void SetNewTargetPosition()
     {
-        finalTargetPosition = pathManager.SelectTargetPostion(player, playerControl.currentFacingDirection, gameObject.transform, otherPosition);
-        paths = AStarPather.compute_path(PositionConverter.WorldToGridPos(gameObject.transform.position), finalTargetPosition);
-
-        //for (int i = 0;i < paths.Count; i++)
-        //    Debug.Log(paths[i].posx + ", " + paths[i].posz);
-
-        // if imposible not move
-        if (paths.Count > 0)
+        if (firstStep >= 2 || paths.Count == 0)
         {
-            currentTargetPosition = PositionConverter.GridPosToWorld(paths[0]);
-            paths.Add(paths[paths.Count - 1]);
-            paths.RemoveAt(0);
+            finalTargetPosition = pathManager.SelectTargetPostion(player, playerControl.currentFacingDirection,
+                gameObject.transform, otherPosition, currentState);
+            paths = AStarPather.compute_path(PositionConverter.WorldToGridPos(gameObject.transform.position), finalTargetPosition);
+
+            // if imposible not move
+            if (paths.Count > 0)
+            {
+                currentTargetPosition = PositionConverter.GridPosToWorld(paths[0]);
+                paths.Add(paths[paths.Count - 1]);
+                paths.RemoveAt(0);
+                firstStep = 0;
+            }
         }
+
     }
 
     private void MoveToNextPosition()
@@ -91,11 +122,11 @@ public class EnemyControler : MoveableAgent
                     CooperativeCenter center = FindObjectOfType<CooperativeCenter>();
                     center.SetLastSeenPlayerPosition(PositionConverter.WorldToGridPos(player.position));
                 }
+                firstStep++;
             }
         }
         else 
         {
-            //Debug.Log("else");
             SetNewTargetPosition();
         }
         base.SetDestination(currentTargetPosition);
@@ -105,7 +136,21 @@ public class EnemyControler : MoveableAgent
     {
         if (useCooperative)
         {
-            pathManager.SetMode(state);
+            currentState = state;
+            SetNewTargetPosition();
+            Renderer renderer = GetComponent<Renderer>();
+            if (currentState == Enemy_State.ES_WANDER)
+            {
+                renderer.material.color = wanderColor;    
+            }
+            else if (currentState == Enemy_State.ES_CHASE)
+            {
+                renderer.material.color = chaseColor;
+            }
+            else if (currentState == Enemy_State.ES_CORNER)
+            {
+                renderer.material.color = CornerColor;
+            }
         }
     }
 
