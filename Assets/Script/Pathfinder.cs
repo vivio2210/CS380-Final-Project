@@ -55,6 +55,9 @@ public class AStarPather
                                     new Gridpos(-1,-1)  , new Gridpos(0,-1)   ,new Gridpos(1,-1) };
 
     private static List<GridNode> openlist = new List<GridNode>();
+
+    private static List<Gridpos> branchTrackLists = new List<Gridpos>();
+
     private static float ROOT2 = 1.414213f;
 
     public static GridNode[,] player_GridNodes = new GridNode[20, 20];
@@ -206,13 +209,13 @@ public class AStarPather
                 for (int k = 0; k < 8; k++)
                 {
                     Gridpos neighborPos = new Gridpos(0, 0);
-                    neighborPos.posx = gridNodes[i,j].gridPos.posx + surroundNeighbors[k].posx;
-                    neighborPos.posz = gridNodes[i,j].gridPos.posz + surroundNeighbors[k].posz;
+                    neighborPos.posx = gridNodes[i, j].gridPos.posx + surroundNeighbors[k].posx;
+                    neighborPos.posz = gridNodes[i, j].gridPos.posz + surroundNeighbors[k].posz;
                     if (neighborPos.posz >= 0 && neighborPos.posz < height && neighborPos.posx >= 0 && neighborPos.posx < width)
                     {
                         if (MapChecker.IsWall(neighborPos))
                         {
-                            gridNodes[i, j].neighbors[k] =  false;
+                            gridNodes[i, j].neighbors[k] = false;
                         }
                         else
                         {
@@ -225,7 +228,7 @@ public class AStarPather
                     }
                 }
 
-                if (gridNodes[i,j].neighbors[1] == false)
+                if (gridNodes[i, j].neighbors[1] == false)
                 {
                     gridNodes[i, j].neighbors[0] = false;
                     gridNodes[i, j].neighbors[2] = false;
@@ -246,6 +249,26 @@ public class AStarPather
                     gridNodes[i, j].neighbors[7] = false;
                 }
 
+            }
+        }
+
+        for (int j = 0; j < width; j++)
+        {
+            for (int i = 0; i < height; i++)
+            {
+                int neighborCount = 0;
+                for (int k = 0; k < 8; k++)
+                {
+                    if (gridNodes[i, j].neighbors[k])
+                    {
+                        neighborCount++;
+                        if (neighborCount > 2)
+                        {
+                            branchTrackLists.Add(gridNodes[i, j].gridPos);
+                            continue;
+                        }
+                    }
+                }
             }
         }
     }
@@ -322,4 +345,46 @@ public class AStarPather
             }
         }
     }
+
+    public static bool IsClearPath(Gridpos start, Gridpos goal)
+    {
+        RaycastHit hit;
+        Vector3 position = PositionConverter.GridPosToWorld(start);
+        Vector3 direction = PositionConverter.GridPosToWorld(goal) - PositionConverter.GridPosToWorld(start);
+
+        if (Physics.Raycast(position, direction.normalized, out hit, Mathf.Infinity))
+        {
+            if (hit.distance >= direction.magnitude)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        return false;
+    }
+
+    public static float FindDistance(int x1, int z1, int x2, int z2)
+    {
+        return (float)math.sqrt(math.pow(x1 - x2, 2) + math.pow(z1 - z2, 2));
+    }
+    public static Gridpos GetNearestBranchTrack(Gridpos start)
+    {
+        int index = -1;
+        float currentdistance = 5000;
+        for (int i = 0; i < branchTrackLists.Count; i++) 
+        {
+            float distance = FindDistance(start.posx, start.posz, branchTrackLists[i].posx, branchTrackLists[i].posz);
+            if (distance < currentdistance)
+            {
+                currentdistance = distance;
+                index = i;
+            }
+        }
+        return branchTrackLists[index];
+    }
+
 };

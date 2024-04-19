@@ -88,6 +88,28 @@ public class MapChecker
         return true;
     }
 
+    public static bool IsWall(int posx, int posz)
+    {
+        RaycastHit hit;
+        Vector3 position = PositionConverter.GridPosToWorld(posx, posz);
+        position.y = 2;
+        Vector3 direction = new Vector3(0, -1, 0);
+
+        if (Physics.Raycast(position, direction, out hit, Mathf.Infinity))
+        {
+            if (hit.transform.gameObject.tag == "Wall")
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     public static bool IsWallOrEnemy(Gridpos gridpos)
     {
         RaycastHit hit;

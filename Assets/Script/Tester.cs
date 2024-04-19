@@ -8,20 +8,11 @@ public class Tester : MoveableAgent
 {
     [SerializeField]
     private Camera Camera = null;
-
     private RaycastHit[] Hits = new RaycastHit[1];
-
     private List<Gridpos> currentPath = new List<Gridpos>();
-
     private Vector3 currentTargetPosition = new Vector3(0, 0, 0);
-
-    [SerializeField]
     private Gridpos currentGridPosition = new Gridpos(0, 0);
-
-    [SerializeField]
     private Gridpos currentTargetGridPosition = new Gridpos(0, 0);
-
-    [SerializeField]
     private Vector3 currentFacingDirection = new Vector3(0, 0, 1);
 
     private void Awake()

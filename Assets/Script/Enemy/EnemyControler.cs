@@ -1,3 +1,4 @@
+using Sirenix.OdinInspector;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Mathematics;
@@ -7,20 +8,23 @@ using UnityEngine.AI;
 public class EnemyControler : MoveableAgent
 {
     public Transform player;
+    public Transform target = null;
     public Transform otherEnemy;
 
     public PlayerControl playerControl;
     public EnemyPathManager pathManager;
 
-    [SerializeField]
-    private Gridpos finalTargetPosition = new Gridpos(0,0);
+    private Gridpos finalTargetPosition = new Gridpos(0, 0);
     private List<Gridpos> paths = new List<Gridpos>();
-    [SerializeField]
     private Vector3 currentTargetPosition;
 
     [SerializeField]
     private int stepBeforeCompute = 10;
     private int stepCount = 0;
+
+    [Header("Cooperative Setting")]
+    [SerializeField]
+    private bool useCooperative = false;
 
     private void Awake()
     {
@@ -35,11 +39,12 @@ public class EnemyControler : MoveableAgent
     private void Update()
     {
         MoveToNextPosition();
+        pathManager.SetMode(Enemy_State.ES_CHASE);
     }
 
     private void SetNewTargetPosition()
     {
-        finalTargetPosition = pathManager.SelectTargetPostion(player, playerControl.currentFacingDirection, otherEnemy);
+        finalTargetPosition = pathManager.SelectTargetPostion(player, playerControl.currentFacingDirection, gameObject.transform, otherEnemy);
         paths = AStarPather.compute_path(PositionConverter.WorldToGridPos(gameObject.transform.position), finalTargetPosition);
 
         // if imposible not move
@@ -66,14 +71,30 @@ public class EnemyControler : MoveableAgent
                     paths.RemoveAt(0);
                 currentTargetPosition = PositionConverter.GridPosToWorld(paths[0]);
                 stepCount++;
+
+                if (AStarPather.IsClearPath(PositionConverter.WorldToGridPos(gameObject.transform.position),
+                    PositionConverter.WorldToGridPos(player.position)))
+                {
+                    CooperativeCenter center = FindObjectOfType<CooperativeCenter>();
+                    center.SetLastSeenPlayerPosition(PositionConverter.WorldToGridPos(player.position));
+                }
             }
         }
-        else 
+        else
         {
             SetNewTargetPosition();
             stepCount = 0;
         }
         base.SetDestination(currentTargetPosition);
-
     }
+
+    //private bool IsSeePlayer()
+    //{
+    //    if (AStarPather.IsClearPath(PositionConverter.WorldToGridPos(gameObject.transform.position), 
+    //        PositionConverter.WorldToGridPos(player.transform.position)))
+    //    { 
+            
+    //    }
+    //}
+
 }
