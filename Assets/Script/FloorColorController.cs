@@ -2,35 +2,21 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class FloorColorController : MonoBehaviour
 {
     [SerializeField] private GameObject[] Floor;
 
-    private static FloorColorController instance;
-    public static FloorColorController GetInstance { get { return instance; } }
-
-    // Start is called before the first frame update
-    void Awake()
-    {
-        if(instance != null && instance != this)
-        {
-            Destroy(this.gameObject);
-        }
-        else
-        {
-            instance = this;
-        }
-    }
-
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            Color color = new Color(1f, 0.5f, 0.5f);
-            ChangeFloorColor(1, 0, color);
-        }
+        //if (Input.GetKeyDown(KeyCode.Space))
+        //{
+            //Color color = new Color(1f, 0.5f, 0.5f);
+            //ChangeFloorColor(1, 0, color);
+            //SceneManager.LoadScene("PacManMap");
+        //}
     }
 
     public void ChangeFloorColor(int row, int col, Color color)
