@@ -9,22 +9,28 @@ public class EnemyControler : MoveableAgent
 {
     public Transform player;
     public Transform target = null;
-    public Transform otherEnemy;
+    public Vector3 otherPosition;
 
     public PlayerControl playerControl;
     public EnemyPathManager pathManager;
 
+    [SerializeField]
+    private float targetTimer = 3.0f;
+
+    [SerializeField]
     private Gridpos finalTargetPosition = new Gridpos(0, 0);
     private List<Gridpos> paths = new List<Gridpos>();
+    [SerializeField]
     private Vector3 currentTargetPosition;
 
     [SerializeField]
     private int stepBeforeCompute = 10;
+    [SerializeField]
     private int stepCount = 0;
 
     [Header("Cooperative Setting")]
     [SerializeField]
-    private bool useCooperative = false;
+    public bool useCooperative = false;
 
     private void Awake()
     {
@@ -34,24 +40,32 @@ public class EnemyControler : MoveableAgent
     private void Start()
     {
         SetNewTargetPosition();
+        if (useCooperative)
+        {
+            pathManager.SetMode(Enemy_State.ES_CORNER);
+        }
+        StartCoroutine(TargetTimer());
     }
 
     private void Update()
     {
         MoveToNextPosition();
-        pathManager.SetMode(Enemy_State.ES_CHASE);
     }
 
     private void SetNewTargetPosition()
     {
-        finalTargetPosition = pathManager.SelectTargetPostion(player, playerControl.currentFacingDirection, gameObject.transform, otherEnemy);
+        finalTargetPosition = pathManager.SelectTargetPostion(player, playerControl.currentFacingDirection, gameObject.transform, otherPosition);
         paths = AStarPather.compute_path(PositionConverter.WorldToGridPos(gameObject.transform.position), finalTargetPosition);
+
+        //for (int i = 0;i < paths.Count; i++)
+        //    Debug.Log(paths[i].posx + ", " + paths[i].posz);
 
         // if imposible not move
         if (paths.Count > 0)
         {
             currentTargetPosition = PositionConverter.GridPosToWorld(paths[0]);
-            base.SetDestination(currentTargetPosition);
+            paths.Add(paths[paths.Count - 1]);
+            paths.RemoveAt(0);
         }
     }
 
@@ -67,9 +81,8 @@ public class EnemyControler : MoveableAgent
         {
             if (math.abs(currentTargetPosition.x - gameObject.transform.position.x) <= 0.1f && math.abs(currentTargetPosition.z - gameObject.transform.position.z) <= 0.1f)
             {
-                if (paths.Count != 1)
-                    paths.RemoveAt(0);
                 currentTargetPosition = PositionConverter.GridPosToWorld(paths[0]);
+                paths.RemoveAt(0);
                 stepCount++;
 
                 if (AStarPather.IsClearPath(PositionConverter.WorldToGridPos(gameObject.transform.position),
@@ -80,21 +93,32 @@ public class EnemyControler : MoveableAgent
                 }
             }
         }
-        else
+        else 
         {
+            //Debug.Log("else");
             SetNewTargetPosition();
-            stepCount = 0;
         }
         base.SetDestination(currentTargetPosition);
     }
 
-    //private bool IsSeePlayer()
-    //{
-    //    if (AStarPather.IsClearPath(PositionConverter.WorldToGridPos(gameObject.transform.position), 
-    //        PositionConverter.WorldToGridPos(player.transform.position)))
-    //    { 
-            
-    //    }
-    //}
+    public void SetMode(Enemy_State state)
+    {
+        if (useCooperative)
+        {
+            pathManager.SetMode(state);
+        }
+    }
+
+    private IEnumerator TargetTimer()
+    {
+        WaitForSeconds Wait = new WaitForSeconds(targetTimer);
+
+        while (enabled)
+        {
+            Debug.Log("Timer");
+            SetNewTargetPosition();
+            yield return Wait;
+        }
+    }
 
 }

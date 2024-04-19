@@ -23,6 +23,7 @@ public class GridNode
     public float givenCost = 0;
     public Nodelist onlist = Nodelist.E_NONELIST;
     public bool[] neighbors = new bool[8]; // false = wall , true = can walk
+    public bool isBranchTrack = false;
 
     // Neighbor Map
     //	0	1	2
@@ -88,7 +89,6 @@ public class AStarPather
 
         if (MapChecker.IsWall(goal))
         {
-            //Debug.Log("IMPOSSIBLE");
             return new List<Gridpos>();
         }
         ClearGridNode();
@@ -206,6 +206,10 @@ public class AStarPather
         {
             for (int i = 0; i < height; i++)
             {
+                if (MapChecker.IsWall(gridNodes[i, j].gridPos))
+                {
+                    continue;
+                }
                 for (int k = 0; k < 8; k++)
                 {
                     Gridpos neighborPos = new Gridpos(0, 0);
@@ -259,11 +263,16 @@ public class AStarPather
                 int neighborCount = 0;
                 for (int k = 0; k < 8; k++)
                 {
+                    if (MapChecker.IsWall(gridNodes[i, j].gridPos))
+                    {
+                        continue;
+                    }
                     if (gridNodes[i, j].neighbors[k])
                     {
                         neighborCount++;
                         if (neighborCount > 2)
                         {
+                            gridNodes[i, j].isBranchTrack = true;
                             branchTrackLists.Add(gridNodes[i, j].gridPos);
                             continue;
                         }
@@ -354,7 +363,7 @@ public class AStarPather
 
         if (Physics.Raycast(position, direction.normalized, out hit, Mathf.Infinity))
         {
-            if (hit.distance >= direction.magnitude)
+            if (hit.transform.tag == "Wall")
             {
                 return true;
             }
@@ -387,4 +396,96 @@ public class AStarPather
         return branchTrackLists[index];
     }
 
+    public static void Test()
+    {
+        for (int i = 0; i < branchTrackLists.Count; i++)
+        {
+            FloorColorController.GetInstance.ChangeFloorColor(branchTrackLists[i].posx, branchTrackLists[i].posz,
+                new Color(0,0,1,1));
+        }
+    }
+
+    public static List<Gridpos> GetRoomGrid(Gridpos start)
+    {
+        if (branchTrackLists.Contains(start))
+        {
+            return new List<Gridpos>();
+        }
+
+        List<Gridpos> roomGrid = new List<Gridpos>();
+
+        ClearGridNode();
+        gridNodes[start.posx, start.posz].onlist = Nodelist.E_OPENLIST;
+        gridNodes[start.posx, start.posz].parent = null;
+        openlist.Add(gridNodes[start.posx, start.posz]);
+
+        while (openlist.Count > 0)
+        {
+            GridNode parentNode = openlist[0];
+            openlist.RemoveAt(0);
+            roomGrid.Add(parentNode.gridPos);
+            parentNode.onlist = Nodelist.E_CLOSELIST;
+            for (int i = 0; i < 8; i++)
+            {
+                if (parentNode.neighbors[i])
+                {
+                    Gridpos childpos = parentNode.gridPos + surroundNeighbors[i];
+                    GridNode childNode = gridNodes[childpos.posx, childpos.posz];
+                    if (childNode.isBranchTrack)
+                    {
+                        continue;
+                    }
+                    if (childNode.onlist == Nodelist.E_NONELIST)
+                    {
+                        childNode.onlist = Nodelist.E_OPENLIST;
+                        openlist.Add(childNode);
+                    }
+                }
+            }
+        }
+
+        return roomGrid;
+    }
+
+    public static List<Gridpos> GetDoorRoomGrid(Gridpos start)
+    {
+        if (branchTrackLists.Contains(start))
+        {
+            return new List<Gridpos>();
+        }
+
+        List<Gridpos> roomGrid = new List<Gridpos>();
+
+        ClearGridNode();
+        gridNodes[start.posx, start.posz].onlist = Nodelist.E_OPENLIST;
+        gridNodes[start.posx, start.posz].parent = null;
+        openlist.Add(gridNodes[start.posx, start.posz]);
+
+        while (openlist.Count > 0)
+        {
+            GridNode parentNode = openlist[0];
+            openlist.RemoveAt(0);
+            parentNode.onlist = Nodelist.E_CLOSELIST;
+            for (int i = 0; i < 8; i++)
+            {
+                if (parentNode.neighbors[i])
+                {
+                    Gridpos childpos = parentNode.gridPos + surroundNeighbors[i];
+                    GridNode childNode = gridNodes[childpos.posx, childpos.posz];
+                    if (childNode.isBranchTrack)
+                    {
+                        roomGrid.Add(childNode.gridPos);
+                        continue;
+                    }
+                    if (childNode.onlist == Nodelist.E_NONELIST)
+                    {
+                        childNode.onlist = Nodelist.E_OPENLIST;
+                        openlist.Add(childNode);
+                    }
+                }
+            }
+        }
+
+        return roomGrid;
+    }
 };

@@ -9,6 +9,8 @@ using System.Collections.Generic;
 public class PlayerControl : MoveableAgent
 {
     [SerializeField]
+    private bool useManualControl = false;
+    [SerializeField]
     private Camera Camera = null;
     //private NavMeshAgent Agent;
 
@@ -35,6 +37,10 @@ public class PlayerControl : MoveableAgent
     [SerializeField]
     public Vector3 currentFacingDirection = new Vector3(0, 0, 1);
 
+
+    private Vector3 currentTargetPosition = new Vector3(0, 0, 0);
+    private Gridpos currentTargetGridPosition = new Gridpos(0, 0);
+
     private void Awake()
     {
         //Agent = GetComponent<NavMeshAgent>();
@@ -44,11 +50,23 @@ public class PlayerControl : MoveableAgent
     {
         AStarPather.initialize();
         updateEnemyInScene();
+        if (useManualControl)
+        {
+            currentTargetGridPosition = PositionConverter.WorldToGridPos(gameObject.transform.position);
+            currentTargetPosition = PositionConverter.GridPosToWorld(currentTargetGridPosition);
+        }
     }
 
     private void Update()
     {
-        MoveToFarthestDistance();
+        if (useManualControl)
+        {
+            ManualControl();
+        }
+        else
+        {
+            MoveToFarthestDistance();
+        }
         SetFaceDirection();
     }
 
@@ -126,11 +144,10 @@ public class PlayerControl : MoveableAgent
             currentPath.Clear();
 
             currentPath = AStarPather.compute_path(playerGrisPos, farthestGrid, true);
-            currentGridPosition = new Gridpos(currentPath[0].posx, currentPath[0].posz);
-            currentPath.RemoveAt(0);
-
-            if(currentPath.Count > 0)
+            if (currentPath.Count > 0)
             {
+                currentGridPosition = new Gridpos(currentPath[0].posx, currentPath[0].posz);
+                currentPath.RemoveAt(0);
                 currentPath.Add(currentPath[currentPath.Count - 1]);
             }
 
@@ -162,4 +179,43 @@ public class PlayerControl : MoveableAgent
     {
         stepBeforeCompute = playerStep;
     }
+
+    private void ManualControl()
+    {
+        if (Input.GetKeyUp(KeyCode.Mouse0))
+        {
+            Ray ray = Camera.ScreenPointToRay(Input.mousePosition);
+
+            if (Physics.RaycastNonAlloc(ray, Hits) > 0)
+            {
+                currentPath = AStarPather.compute_path(PositionConverter.WorldToGridPos(gameObject.transform.position), PositionConverter.WorldToGridPos(Hits[0].point));
+                if (currentPath.Count > 0)
+                {
+                    currentTargetGridPosition = new Gridpos(currentPath[0].posx, currentPath[0].posz);
+                    currentTargetPosition = PositionConverter.GridPosToWorld(currentTargetGridPosition);
+                    currentPath.RemoveAt(0);
+                }
+            }
+        }
+
+        if (currentPath.Count > 0)
+        {
+            if (math.abs(currentTargetPosition.x - gameObject.transform.position.x) <= 0.1f && math.abs(currentTargetPosition.z - gameObject.transform.position.z) <= 0.1f)
+            {
+                currentTargetGridPosition = currentPath[0];
+                currentTargetPosition = PositionConverter.GridPosToWorld(currentTargetGridPosition);
+                currentPath.RemoveAt(0);
+            }
+            base.SetDestination(currentTargetPosition);
+        }
+        else
+        {
+            if (math.abs(currentTargetPosition.x - gameObject.transform.position.x) <= 0.1f && math.abs(currentTargetPosition.z - gameObject.transform.position.z) <= 0.1f)
+            {
+                base.SetDestination(PositionConverter.WorldToWorld(gameObject.transform.position));
+            }
+            base.SetDestination(currentTargetPosition);
+        }
+    }
+
 }

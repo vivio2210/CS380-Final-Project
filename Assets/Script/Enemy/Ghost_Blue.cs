@@ -6,11 +6,11 @@ using UnityEngine.AI;
 [CreateAssetMenu(fileName = "Ghost_Blue_SO", menuName = "ScriptableObjects/Ghost_Blue_SO")]
 public class Ghost_Blue : EnemyPathManager
 {
-    public override Gridpos SelectTargetPostion(Transform playerPosition, Vector3 playerFaceDirection, Transform selfPosition = null, Transform otherPosition = null)
+    public override Gridpos SelectTargetPostion(Transform playerPosition, Vector3 playerFaceDirection, Transform selfPosition, Vector3 otherPosition)
     {
         Vector3 playerLookAtPostion = playerPosition.position + 2 * playerFaceDirection;
-        Vector3 direction = playerLookAtPostion - otherPosition.position;
-        Vector3 goal = otherPosition.position + 4 * direction.normalized;
+        Vector3 direction = playerLookAtPostion - otherPosition;
+        Vector3 goal = otherPosition + 4 * direction.normalized;
         return PositionConverter.WorldToGridPos(goal);
     }
 }

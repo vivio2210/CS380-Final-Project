@@ -7,6 +7,7 @@ using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.PlayerLoop;
+using static UnityEngine.GraphicsBuffer;
 
 [CreateAssetMenu(fileName = "Ghost_Cooperative_SO", menuName = "ScriptableObjects/Ghost_Cooperative_SO")]
 public class Ghost_Cooperative : EnemyPathManager
@@ -15,25 +16,9 @@ public class Ghost_Cooperative : EnemyPathManager
     private int wanderRadius = 2;
 
     private Enemy_State mode = Enemy_State.ES_WANDER;
-    public override Gridpos SelectTargetPostion(Transform playerPosition, Vector3 playerFaceDirection, Transform selfPosition = null, Transform otherPosition = null)
+    public override Gridpos SelectTargetPostion(Transform playerPosition, Vector3 playerFaceDirection, Transform selfPosition, Vector3 otherPosition)
     {
-        //if (AStarPather.IsClearPath(PositionConverter.WorldToGridPos(selfPosition.transform.position), PositionConverter.WorldToGridPos(playerPosition.transform.position)))
-        //{
-        //    return PositionConverter.WorldToGridPos(playerPosition.position);
-        //}
-        //else
-        //{
-        //    // Wander
-        //    Gridpos Target;
-        //    int x = UnityEngine.Random.Range(-wanderRadius, wanderRadius + 1);
-        //    int z = UnityEngine.Random.Range(-wanderRadius, wanderRadius + 1);
-
-        //    Target = PositionConverter.WorldToGridPos(selfPosition.position);
-        //    Target.posx += x;
-        //    Target.posz += z;
-        //    return Target;
-        //}
-
+        //Debug.Log(mode);
         if (mode == Enemy_State.ES_WANDER)
         {
             return Wander(playerPosition, selfPosition);
@@ -44,7 +29,7 @@ public class Ghost_Cooperative : EnemyPathManager
         }
         else if (mode == Enemy_State.ES_CORNER)
         {
-            return Corner(playerPosition, selfPosition);
+            return Corner(playerPosition, selfPosition, otherPosition);
         }
         else
         {
@@ -60,15 +45,22 @@ public class Ghost_Cooperative : EnemyPathManager
 
     private Gridpos Wander(Transform playerPosition, Transform selfPosition)
     {
-        return PositionConverter.WorldToGridPos(selfPosition.position);
+        // Wander
+        Gridpos Target;
+        int x = UnityEngine.Random.Range(-wanderRadius, wanderRadius + 1);
+        int z = UnityEngine.Random.Range(-wanderRadius, wanderRadius + 1);
+
+        Target = PositionConverter.WorldToGridPos(selfPosition.position);
+        Target.posx += x;
+        Target.posz += z;
+        return Target;
     }
     private Gridpos Chase(Transform playerPosition, Transform selfPosition)
     {
         return PositionConverter.WorldToGridPos(playerPosition.position);
     }
-    private Gridpos Corner(Transform playerPosition, Transform selfPosition)
+    private Gridpos Corner(Transform playerPosition, Transform selfPosition, Vector3 otherPosition)
     {
-        Gridpos target = AStarPather.GetNearestBranchTrack(PositionConverter.WorldToGridPos(playerPosition.position));
-        return target;
+        return PositionConverter.WorldToGridPos(otherPosition);
     }
 }
