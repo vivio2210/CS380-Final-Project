@@ -30,7 +30,7 @@ public class FloorColorController : MonoBehaviour
         for(int i = 0; i < Floor.Length; i++)
         {
             Renderer renderer = Floor[i].GetComponent<Renderer>();
-            renderer.material.color = new Color(1f, 1f, 1f, 1f);
+            renderer.material.color = new Color(0f, 0f, 0f, 1f);
         }
     }
 }

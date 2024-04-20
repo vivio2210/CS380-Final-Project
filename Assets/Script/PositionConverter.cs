@@ -119,16 +119,27 @@ public class MapChecker
 
         if (Physics.Raycast(position, direction, out hit, Mathf.Infinity))
         {
-            if (hit.transform.gameObject.tag == "Floor")
-            {
-                return false;
-            }
-            else
+            if (hit.transform.gameObject.tag == "Enemy" || hit.transform.gameObject.tag == "Wall")
             {
                 return true;
             }
+            else
+            {
+                return false;
+            }
         }
 
-        return true;
+        //Collider[] hitColliders = Physics.OverlapBox(position, new Vector3(1,1,1), Quaternion.identity);
+        //int i = 0;
+        ////Check when there is a new collider coming into contact with the box
+        //while (i < hitColliders.Length)
+        //{
+        //    //Output all of the collider names
+        //    //Debug.Log("Hit : " + hitColliders[i].name + i);
+        //    //Increase the number of Colliders in the array
+        //    i++;
+        //}
+
+        return false;
     }
 }

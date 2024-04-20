@@ -147,8 +147,8 @@ public class PlayerControl : MoveableAgent
             if (currentPath.Count > 0)
             {
                 currentGridPosition = new Gridpos(currentPath[0].posx, currentPath[0].posz);
-                currentPath.RemoveAt(0);
                 currentPath.Add(currentPath[currentPath.Count - 1]);
+                currentPath.RemoveAt(0);
             }
 
             currentTargetPosition_Vec3 = PositionConverter.GridPosToWorld(currentGridPosition);
@@ -188,7 +188,10 @@ public class PlayerControl : MoveableAgent
 
             if (Physics.RaycastNonAlloc(ray, Hits) > 0)
             {
-                currentPath = AStarPather.compute_path(PositionConverter.WorldToGridPos(gameObject.transform.position), PositionConverter.WorldToGridPos(Hits[0].point));
+                //AStarPather.PlayerComputeNeighbor();
+                currentPath = AStarPather.compute_path(PositionConverter.WorldToGridPos(gameObject.transform.position), 
+                    PositionConverter.WorldToGridPos(Hits[0].point), true);
+                
                 if (currentPath.Count > 0)
                 {
                     currentTargetGridPosition = new Gridpos(currentPath[0].posx, currentPath[0].posz);
@@ -218,4 +221,41 @@ public class PlayerControl : MoveableAgent
         }
     }
 
+    private void KeyboardManualControl()
+    {
+        if (Input.GetKeyUp(KeyCode.Mouse0))
+        {
+            Ray ray = Camera.ScreenPointToRay(Input.mousePosition);
+
+            if (Physics.RaycastNonAlloc(ray, Hits) > 0)
+            {
+                currentPath = AStarPather.compute_path(PositionConverter.WorldToGridPos(gameObject.transform.position), PositionConverter.WorldToGridPos(Hits[0].point));
+                if (currentPath.Count > 0)
+                {
+                    currentTargetGridPosition = new Gridpos(currentPath[0].posx, currentPath[0].posz);
+                    currentTargetPosition = PositionConverter.GridPosToWorld(currentTargetGridPosition);
+                    currentPath.RemoveAt(0);
+                }
+            }
+        }
+
+        if (currentPath.Count > 0)
+        {
+            if (math.abs(currentTargetPosition.x - gameObject.transform.position.x) <= 0.1f && math.abs(currentTargetPosition.z - gameObject.transform.position.z) <= 0.1f)
+            {
+                currentTargetGridPosition = currentPath[0];
+                currentTargetPosition = PositionConverter.GridPosToWorld(currentTargetGridPosition);
+                currentPath.RemoveAt(0);
+            }
+            base.SetDestination(currentTargetPosition);
+        }
+        else
+        {
+            if (math.abs(currentTargetPosition.x - gameObject.transform.position.x) <= 0.1f && math.abs(currentTargetPosition.z - gameObject.transform.position.z) <= 0.1f)
+            {
+                base.SetDestination(PositionConverter.WorldToWorld(gameObject.transform.position));
+            }
+            base.SetDestination(currentTargetPosition);
+        }
+    }
 }

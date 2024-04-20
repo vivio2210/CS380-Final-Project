@@ -47,7 +47,6 @@ public class EnemyControler : MoveableAgent
     [SerializeField]
     public UnityEngine.Color CornerColor = UnityEngine.Color.white;
 
-    [SerializeField]
     private LineRenderer lineRenderer;
 
     private int firstStep = 0;
@@ -71,21 +70,6 @@ public class EnemyControler : MoveableAgent
     private void Update()
     {
         MoveToNextPosition();
-        //if(useCooperative)
-        //{
-        //    if (Input.GetKeyDown(KeyCode.O))
-        //    {
-        //        SetMode(Enemy_State.ES_CHASE);
-        //    }
-        //    if (Input.GetKeyDown(KeyCode.P))
-        //    {
-        //        SetMode(Enemy_State.ES_WANDER);
-        //    }
-        //    if (Input.GetKeyDown(KeyCode.I))
-        //    {
-        //        SetMode(Enemy_State.ES_CORNER);
-        //    }
-        //}
         if (useCooperative)
         {
             if (currentState != Enemy_State.ES_WANDER)
@@ -150,6 +134,16 @@ public class EnemyControler : MoveableAgent
                     CooperativeCenter center = FindObjectOfType<CooperativeCenter>();
                     center.SetLastSeenPlayerPosition(PositionConverter.WorldToGridPos(player.position));
                 }
+                if (useCooperative && currentState == Enemy_State.ES_CHASE)
+                {
+                    CooperativeCenter center = FindObjectOfType<CooperativeCenter>();
+                    Gridpos tempPosition = PositionConverter.WorldToGridPos(gameObject.transform.position);
+                    if (center.lastSeenPlayerPosition.posx == tempPosition.posx && center.lastSeenPlayerPosition.posz == tempPosition.posz)
+                    {
+                        center.ResetTasks();
+                    }
+                }
+
                 firstStep++;
             }
         }
@@ -192,6 +186,11 @@ public class EnemyControler : MoveableAgent
             SetNewTargetPosition();
             yield return Wait;
         }
+    }
+
+    public void ClearReserved()
+    {
+        reservedPaths.Clear();
     }
 
 }

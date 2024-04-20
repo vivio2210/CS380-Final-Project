@@ -25,7 +25,7 @@ public class Ghost_Cooperative : EnemyPathManager
         }
         else if (mode == Enemy_State.ES_CHASE)
         {
-            return Chase(playerPosition, selfPosition);
+            return Chase(playerPosition, selfPosition, otherPosition);
         }
         else if (mode == Enemy_State.ES_CORNER)
         {
@@ -50,7 +50,7 @@ public class Ghost_Cooperative : EnemyPathManager
         Target.posz += z;
         return Target;
     }
-    private Gridpos Chase(Transform playerPosition, Transform selfPosition)
+    private Gridpos Chase(Transform playerPosition, Transform selfPosition, Vector3 otherPosition)
     {
         return PositionConverter.WorldToGridPos(playerPosition.position);
     }

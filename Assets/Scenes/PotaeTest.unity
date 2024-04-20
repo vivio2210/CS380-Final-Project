@@ -12221,8 +12221,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1fd2ad9ee23332142ade6dd575452a8e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 5
-  useManualControl: 1
+  speed: 4
+  useManualControl: 0
   Camera: {fileID: 963194227}
   enemies:
   - {fileID: 1110504528}
@@ -14164,7 +14164,7 @@ Light:
     m_Type: 2
     m_Resolution: -1
     m_CustomResolution: -1
-    m_Strength: 1
+    m_Strength: 0
     m_Bias: 0.05
     m_NormalBias: 0.4
     m_NearPlane: 0.2
@@ -18913,6 +18913,7 @@ MonoBehaviour:
   enemiesAssigned: 
   doorColor: {r: 1, g: 0.53333336, b: 0, a: 0}
   roomColor: {r: 0, g: 1, b: 1, a: 0}
+  lastSeenPlayerPointColor: {r: 1, g: 0, b: 0, a: 0}
 --- !u!43 &1041125235
 Mesh:
   m_ObjectHideFlags: 0

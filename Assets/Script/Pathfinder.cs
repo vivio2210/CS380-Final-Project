@@ -92,20 +92,20 @@ public class AStarPather
             return new List<Gridpos>();
         }
         ClearGridNode();
-        if (isPlayer)
-        {
-            player_GridNodes[start.posx, start.posz].onlist = Nodelist.E_OPENLIST;
-            player_GridNodes[start.posx, start.posz].calurateFinalCost(goal, 0);
-            player_GridNodes[start.posx, start.posz].parent = null;
-            openlist.Add(player_GridNodes[start.posx, start.posz]);
-        }
-        else
-        {
+        //if (isPlayer)
+        //{
+        //    player_GridNodes[start.posx, start.posz].onlist = Nodelist.E_OPENLIST;
+        //    player_GridNodes[start.posx, start.posz].calurateFinalCost(goal, 0);
+        //    player_GridNodes[start.posx, start.posz].parent = null;
+        //    openlist.Add(player_GridNodes[start.posx, start.posz]);
+        //}
+        //else
+        //{
             gridNodes[start.posx, start.posz].onlist = Nodelist.E_OPENLIST;
             gridNodes[start.posx, start.posz].calurateFinalCost(goal, 0);
             gridNodes[start.posx, start.posz].parent = null;
             openlist.Add(gridNodes[start.posx, start.posz]);
-        }
+        //}
 
 
         while (openlist.Count > 0)
@@ -113,6 +113,14 @@ public class AStarPather
             int parentNodeIndex = FindCheapestNodeIndex();
             GridNode parentNode = openlist[parentNodeIndex];
             openlist.RemoveAt(parentNodeIndex);
+            if (isPlayer)
+            {
+                if (MapChecker.IsWallOrEnemy(parentNode.gridPos))
+                {
+                    continue;
+                }
+            }
+
             if (parentNode.gridPos.posx == goal.posx && parentNode.gridPos.posz == goal.posz)
             {
                 GridNode currentNode = parentNode;
@@ -131,10 +139,10 @@ public class AStarPather
                 {
                     Gridpos childpos = parentNode.gridPos + surroundNeighbors[i];
                     GridNode childNode = gridNodes[childpos.posx, childpos.posz];
-                    if (isPlayer)
-                    {
-                        childNode = player_GridNodes[childpos.posx, childpos.posz];
-                    }   
+                    //if (isPlayer)
+                    //{
+                    //    childNode = player_GridNodes[childpos.posx, childpos.posz];
+                    //}   
                     if (childNode.onlist == Nodelist.E_NONELIST)
                     {
                         if (i == 0 || i == 2 || i == 5 || i == 7) // is diaganal

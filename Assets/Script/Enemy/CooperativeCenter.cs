@@ -13,7 +13,7 @@ public enum Enemy_State
 public class CooperativeCenter : MonoBehaviour
 {
     [SerializeField]
-    private Gridpos lastSeenPlayerPosition = new Gridpos(-1, -1);
+    public Gridpos lastSeenPlayerPosition = new Gridpos(-1, -1);
 
     [SerializeField]
     private Transform player;
@@ -30,6 +30,9 @@ public class CooperativeCenter : MonoBehaviour
     [SerializeField]
     public Color roomColor;
 
+    [SerializeField]
+    public Color lastSeenPlayerPointColor;
+
     private FloorColorController floorColorController;
 
     public void Start()
@@ -44,8 +47,6 @@ public class CooperativeCenter : MonoBehaviour
     public void Update()
     {
         floorColorController.ClearColor();
-        //AStarPather.Test();
-        //List<Gridpos> doors = AStarPather.GetDoorRoomGrid(PositionConverter.WorldToGridPos(player.position));
         List<Gridpos> rooms = AStarPather.GetRoomGrid(PositionConverter.WorldToGridPos(player.position));
         Gridpos temp;
 
@@ -59,12 +60,26 @@ public class CooperativeCenter : MonoBehaviour
             temp = rooms[i];
             floorColorController.ChangeFloorColor(temp.posx, temp.posz, roomColor);
         }
+        if (lastSeenPlayerPosition.posx != -1 && lastSeenPlayerPosition.posz != -1)
+        {
+            floorColorController.ChangeFloorColor(lastSeenPlayerPosition.posx, lastSeenPlayerPosition.posz, lastSeenPlayerPointColor);
+        }
     }
 
     public void SetLastSeenPlayerPosition(Gridpos pos)
     {
         lastSeenPlayerPosition = pos;
         AssignTasks();
+    }
+
+    public void ResetTasks()
+    {
+        ClearEnemiesAssigned();
+        for (int i = 0; i < enemyAgents.Length; i++)
+        {
+            enemyAgents[i].ClearReserved();
+            enemyAgents[i].SetMode(Enemy_State.ES_WANDER);
+        }
     }
 
     public void AssignTasks()
@@ -83,7 +98,7 @@ public class CooperativeCenter : MonoBehaviour
                 index = i;
             }
         }
-        enemyAgents[index].player.position = PositionConverter.GridPosToWorld(lastSeenPlayerPosition);
+        enemyAgents[index].otherPosition = PositionConverter.GridPosToWorld(lastSeenPlayerPosition);
         enemyAgents[index].SetMode(Enemy_State.ES_CHASE);
         enemiesAssigned[index] = true;
         List<Gridpos> doors = AStarPather.GetDoorRoomGrid(PositionConverter.WorldToGridPos(player.position));
@@ -122,6 +137,7 @@ public class CooperativeCenter : MonoBehaviour
             {
                 continue;
             }
+            enemyAgents[i].ClearReserved();
             enemyAgents[i].SetMode(Enemy_State.ES_WANDER);
         }
     }
