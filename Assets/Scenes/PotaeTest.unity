@@ -4394,6 +4394,26 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 605327200268143216, guid: dd7e307a9f0a8284a807c4ea93751609,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 605327200268143216, guid: dd7e307a9f0a8284a807c4ea93751609,
+        type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 605327200268143216, guid: dd7e307a9f0a8284a807c4ea93751609,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: b234e1586ac9f524f8162eb03da23c35, type: 2}
+    - target: {fileID: 605327200268143216, guid: dd7e307a9f0a8284a807c4ea93751609,
+        type: 3}
+      propertyPath: m_Parameters.widthCurve.m_Curve.Array.data[0].value
+      value: 0.27380562
+      objectReference: {fileID: 0}
     - target: {fileID: 3660692581243966625, guid: dd7e307a9f0a8284a807c4ea93751609,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -4461,6 +4481,21 @@ PrefabInstance:
       objectReference: {fileID: 587367509}
     - target: {fileID: 7621753357268490678, guid: dd7e307a9f0a8284a807c4ea93751609,
         type: 3}
+      propertyPath: wanderColor.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7621753357268490678, guid: dd7e307a9f0a8284a807c4ea93751609,
+        type: 3}
+      propertyPath: wanderColor.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7621753357268490678, guid: dd7e307a9f0a8284a807c4ea93751609,
+        type: 3}
+      propertyPath: wanderColor.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7621753357268490678, guid: dd7e307a9f0a8284a807c4ea93751609,
+        type: 3}
       propertyPath: useCooperative
       value: 1
       objectReference: {fileID: 0}
@@ -4468,6 +4503,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: GhostCooperative
+      objectReference: {fileID: 0}
+    - target: {fileID: 7986893522650296243, guid: dd7e307a9f0a8284a807c4ea93751609,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -18871,8 +18911,8 @@ MonoBehaviour:
   player: {fileID: 587367507}
   enemyAgents: []
   enemiesAssigned: 
-  enemyColor: {r: 0.0066566467, g: 0, b: 1, a: 0}
-  playerColor: {r: 0.13308239, g: 1, b: 0, a: 0}
+  doorColor: {r: 1, g: 0.53333336, b: 0, a: 0}
+  roomColor: {r: 0, g: 1, b: 1, a: 0}
 --- !u!43 &1041125235
 Mesh:
   m_ObjectHideFlags: 0

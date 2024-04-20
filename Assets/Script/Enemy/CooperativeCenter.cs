@@ -25,21 +25,12 @@ public class CooperativeCenter : MonoBehaviour
     public bool[] enemiesAssigned;
 
     [SerializeField]
-    public Color enemyColor;
+    public Color doorColor;
 
     [SerializeField]
-    public Color playerColor;
+    public Color roomColor;
 
     private FloorColorController floorColorController;
-
-    //public void SetPlayerPosition(Gridpos playerPos)
-    //{
-    //    lastSeenPlayerPosition = playerPos;
-    //    for (int i = 0; i < enemyAgents.Length; i++)
-    //    {
-    //        enemyAgents[i].state = Enemy_State.ES_CHASE;
-    //    }
-    //}
 
     public void Start()
     {
@@ -54,18 +45,19 @@ public class CooperativeCenter : MonoBehaviour
     {
         floorColorController.ClearColor();
         //AStarPather.Test();
-        List<Gridpos> doors = AStarPather.GetDoorRoomGrid(PositionConverter.WorldToGridPos(player.position));
+        //List<Gridpos> doors = AStarPather.GetDoorRoomGrid(PositionConverter.WorldToGridPos(player.position));
+        List<Gridpos> rooms = AStarPather.GetRoomGrid(PositionConverter.WorldToGridPos(player.position));
         Gridpos temp;
 
         for (int i = 0; i < AStarPather.branchTrackLists.Count; i++)
         {
             temp = AStarPather.branchTrackLists[i];
-            floorColorController.ChangeFloorColor(temp.posx, temp.posz, new Color(0,0,1,1));
+            floorColorController.ChangeFloorColor(temp.posx, temp.posz, doorColor);
         }
-        for (int i = 0; i < doors.Count; i++)
+        for (int i = 0; i < rooms.Count; i++)
         {
-            temp = doors[i];
-            floorColorController.ChangeFloorColor(temp.posx, temp.posz, playerColor);
+            temp = rooms[i];
+            floorColorController.ChangeFloorColor(temp.posx, temp.posz, roomColor);
         }
     }
 
@@ -84,16 +76,18 @@ public class CooperativeCenter : MonoBehaviour
         for (int i = 0; i < enemyAgents.Length; i++)
         {
             Gridpos enemyPos = PositionConverter.WorldToGridPos(enemyAgents[i].gameObject.transform.position);
-            float distance = AStarPather.FindDistance(enemyPos.posx, enemyPos.posz, playerPos.posx, playerPos.posz);
+            float distance = AStarPather.FindActualDistance(enemyPos.posx, enemyPos.posz, playerPos.posx, playerPos.posz);
             if (distance < currentdistance)
             {
                 currentdistance = distance;
                 index = i;
             }
         }
+        enemyAgents[index].player.position = PositionConverter.GridPosToWorld(lastSeenPlayerPosition);
         enemyAgents[index].SetMode(Enemy_State.ES_CHASE);
         enemiesAssigned[index] = true;
         List<Gridpos> doors = AStarPather.GetDoorRoomGrid(PositionConverter.WorldToGridPos(player.position));
+        List<Gridpos> rooms = AStarPather.GetRoomGrid(PositionConverter.WorldToGridPos(player.position));
         for (int i = 0; i < doors.Count; i++)
         {
             index = -1;
@@ -106,7 +100,7 @@ public class CooperativeCenter : MonoBehaviour
                     continue;
                 }
                 Gridpos enemyPos = PositionConverter.WorldToGridPos(enemyAgents[j].gameObject.transform.position);
-                float distance = AStarPather.FindDistance(enemyPos.posx, enemyPos.posz, playerPos.posx, playerPos.posz);
+                float distance = AStarPather.FindActualDistance(enemyPos.posx, enemyPos.posz, playerPos.posx, playerPos.posz);
                 if (distance < currentdistance)
                 {
                     currentdistance = distance;
@@ -116,8 +110,10 @@ public class CooperativeCenter : MonoBehaviour
             if (index != -1)
             {
                 enemyAgents[index].otherPosition = PositionConverter.GridPosToWorld(doors[i]);
+                enemyAgents[index].reservedPaths = rooms;
                 enemyAgents[index].SetMode(Enemy_State.ES_CORNER);
                 enemiesAssigned[index] = true;
+                //rooms.Add(doors[i]);
             }
         }
         for (int i = 0; i < enemyAgents.Length; i++)

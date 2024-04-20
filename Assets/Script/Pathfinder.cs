@@ -179,9 +179,107 @@ public class AStarPather
                 }
             }
         }
+        return new List<Gridpos>();
+    }
+    public static List<Gridpos> compute_path_with_reserve(Gridpos start, Gridpos goal, List<Gridpos> reserves)
+    {
+        List<Gridpos> pathResult = new List<Gridpos>();
+
+        if (MapChecker.IsWall(goal))
+        {
+            return new List<Gridpos>();
+        }
+        ClearGridNode();
+
+        gridNodes[start.posx, start.posz].onlist = Nodelist.E_OPENLIST;
+        gridNodes[start.posx, start.posz].calurateFinalCost(goal, 0);
+        gridNodes[start.posx, start.posz].parent = null;
+        openlist.Add(gridNodes[start.posx, start.posz]);
+
+        while (openlist.Count > 0)
+        {
+            int parentNodeIndex = FindCheapestNodeIndex();
+            GridNode parentNode = openlist[parentNodeIndex];
+            openlist.RemoveAt(parentNodeIndex);
+            bool founded = false;
+            for (int i = 0; i < reserves.Count; i++)
+            {
+                if (parentNode.gridPos.posx == reserves[i].posx && parentNode.gridPos.posz == reserves[i].posz)
+                {
+                    founded = true;
+                    break;
+                }
+            }
+            if (founded)
+            {
+                continue;
+            }
+            if (parentNode.gridPos.posx == goal.posx && parentNode.gridPos.posz == goal.posz)
+            {
+                GridNode currentNode = parentNode;
+                while (currentNode.parent != null)
+                {
+                    pathResult.Insert(0, currentNode.gridPos);
+                    currentNode = currentNode.parent;
+                }
+                pathResult.Insert(0, start);
+                return pathResult;
+            }
+            parentNode.onlist = Nodelist.E_CLOSELIST;
+            for (int i = 0; i < 8; i++)
+            {
+                if (parentNode.neighbors[i])
+                {
+                    Gridpos childpos = parentNode.gridPos + surroundNeighbors[i];
+                    GridNode childNode = gridNodes[childpos.posx, childpos.posz];
+                    if (childNode.onlist == Nodelist.E_NONELIST)
+                    {
+                        if (i == 0 || i == 2 || i == 5 || i == 7) // is diaganal
+                        {
+                            childNode.calurateFinalCost(goal, parentNode.givenCost + ROOT2);
+                        }
+                        else
+                        {
+                            childNode.calurateFinalCost(goal, parentNode.givenCost + 1.0f);
+                        }
+
+                        childNode.onlist = Nodelist.E_OPENLIST;
+                        childNode.parent = parentNode;
+                        openlist.Add(childNode);
+                    }
+                    else // in open or close list
+                    {
+                        float currentfinalcost = childNode.finalCost;
+                        float newfinalcost = parentNode.givenCost + childNode.calurateHeuristic(goal);
+                        float stepDistance = -1.0f;
+                        if (i == 0 || i == 2 || i == 5 || i == 7) // is diaganal
+                        {
+                            newfinalcost += ROOT2;
+                            stepDistance = ROOT2;
+                        }
+                        else
+                        {
+                            newfinalcost += 1.0f;
+                            stepDistance = 1.0f;
+                        }
+                        if (newfinalcost < currentfinalcost)
+                        {
+                            childNode.calurateFinalCost(goal, parentNode.givenCost + stepDistance);
+                            childNode.parent = parentNode;
+                            if (childNode.onlist == Nodelist.E_CLOSELIST)
+                            {
+                                childNode.onlist = Nodelist.E_OPENLIST;
+                                openlist.Add(childNode);
+                            }
+                        }
+                    }
+                }
+            }
+        }
         //Debug.Log("IMPOSSIBLE");
         return new List<Gridpos>();
     }
+
     public static void InitGridNode()
     {
         int width = 20;
@@ -374,26 +472,6 @@ public class AStarPather
         }
 
         return true;
-
-        //RaycastHit hit;
-        //Vector3 position = PositionConverter.GridPosToWorld(start);
-        //Vector3 direction = PositionConverter.GridPosToWorld(goal) - PositionConverter.GridPosToWorld(start);
-
-        //if (Physics.Raycast(position, direction.normalized, out hit, Mathf.Infinity))
-        //{
-        //    if (hit.transform.tag == "Wall")
-        //    {
-        //        return true;
-        //    }
-        //    else
-        //    {
-        //        return false;
-        //    }
-        //}
-
-        //return false;
-
-
     }
 
     public static float FindDistance(int x1, int z1, int x2, int z2)
@@ -401,6 +479,85 @@ public class AStarPather
         int xDiff = math.abs(x1 - x2);
         int yDiff = math.abs(z1 - z2);
         return (float)((math.min(xDiff, yDiff) * ROOT2) + math.max(xDiff, yDiff) - math.min(xDiff, yDiff));
+    }
+
+    public static float FindActualDistance(int x1, int z1, int x2, int z2)
+    {
+        Gridpos start = new Gridpos(x1, z1);
+        Gridpos goal = new Gridpos(x2, z2);
+
+        if (MapChecker.IsWall(goal))
+        {
+            return 99999f;
+        }
+        ClearGridNode();
+
+        gridNodes[start.posx, start.posz].onlist = Nodelist.E_OPENLIST;
+        gridNodes[start.posx, start.posz].calurateFinalCost(goal, 0);
+        gridNodes[start.posx, start.posz].parent = null;
+        openlist.Add(gridNodes[start.posx, start.posz]);
+
+        while (openlist.Count > 0)
+        {
+            int parentNodeIndex = FindCheapestNodeIndex();
+            GridNode parentNode = openlist[parentNodeIndex];
+            openlist.RemoveAt(parentNodeIndex);
+            if (parentNode.gridPos.posx == goal.posx && parentNode.gridPos.posz == goal.posz)
+            {
+                return parentNode.finalCost;
+            }
+            parentNode.onlist = Nodelist.E_CLOSELIST;
+            for (int i = 0; i < 8; i++)
+            {
+                if (parentNode.neighbors[i])
+                {
+                    Gridpos childpos = parentNode.gridPos + surroundNeighbors[i];
+                    GridNode childNode = gridNodes[childpos.posx, childpos.posz];
+                    if (childNode.onlist == Nodelist.E_NONELIST)
+                    {
+                        if (i == 0 || i == 2 || i == 5 || i == 7) // is diaganal
+                        {
+                            childNode.calurateFinalCost(goal, parentNode.givenCost + ROOT2);
+                        }
+                        else
+                        {
+                            childNode.calurateFinalCost(goal, parentNode.givenCost + 1.0f);
+                        }
+
+                        childNode.onlist = Nodelist.E_OPENLIST;
+                        childNode.parent = parentNode;
+                        openlist.Add(childNode);
+                    }
+                    else // in open or close list
+                    {
+                        float currentfinalcost = childNode.finalCost;
+                        float newfinalcost = parentNode.givenCost + childNode.calurateHeuristic(goal);
+                        float stepDistance = -1.0f;
+                        if (i == 0 || i == 2 || i == 5 || i == 7) // is diaganal
+                        {
+                            newfinalcost += ROOT2;
+                            stepDistance = ROOT2;
+                        }
+                        else
+                        {
+                            newfinalcost += 1.0f;
+                            stepDistance = 1.0f;
+                        }
+                        if (newfinalcost < currentfinalcost)
+                        {
+                            childNode.calurateFinalCost(goal, parentNode.givenCost + stepDistance);
+                            childNode.parent = parentNode;
+                            if (childNode.onlist == Nodelist.E_CLOSELIST)
+                            {
+                                childNode.onlist = Nodelist.E_OPENLIST;
+                                openlist.Add(childNode);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return 99999f;
     }
     public static Gridpos GetNearestBranchTrack(Gridpos start)
     {

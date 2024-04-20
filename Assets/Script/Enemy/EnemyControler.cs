@@ -1,4 +1,5 @@
 using Sirenix.OdinInspector;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
@@ -22,6 +23,10 @@ public class EnemyControler : MoveableAgent
     [SerializeField]
     private Gridpos finalTargetPosition = new Gridpos(0, 0);
     private List<Gridpos> paths = new List<Gridpos>();
+
+    [NonSerialized]
+    public List<Gridpos> reservedPaths = new List<Gridpos>();
+
     [SerializeField]
     private Vector3 currentTargetPosition;
 
@@ -42,12 +47,15 @@ public class EnemyControler : MoveableAgent
     [SerializeField]
     public UnityEngine.Color CornerColor = UnityEngine.Color.white;
 
+    [SerializeField]
+    private LineRenderer lineRenderer;
 
     private int firstStep = 0;
 
     private void Awake()
     {
         AStarPather.initialize();
+        lineRenderer = GetComponent<LineRenderer>();
     }
 
     private void Start()
@@ -78,16 +86,36 @@ public class EnemyControler : MoveableAgent
         //        SetMode(Enemy_State.ES_CORNER);
         //    }
         //}
+        if (useCooperative)
+        {
+            if (currentState != Enemy_State.ES_WANDER)
+            {
+                lineRenderer.enabled = true;
+                DrawPathLine();
+            }
+            else
+            {
+                lineRenderer.enabled = false;
+            }
+        }
     }
-
+    private void DrawPathLine()
+    {
+        lineRenderer.positionCount = paths.Count;
+        for (int i = 0; i < paths.Count; i++)
+        {
+            lineRenderer.SetPosition(i, PositionConverter.GridPosToWorld(paths[i]));
+        }
+    }
     private void SetNewTargetPosition()
     {
         if (firstStep >= 2 || paths.Count == 0)
         {
             finalTargetPosition = pathManager.SelectTargetPostion(player, playerControl.currentFacingDirection,
                 gameObject.transform, otherPosition, currentState);
-            paths = AStarPather.compute_path(PositionConverter.WorldToGridPos(gameObject.transform.position), finalTargetPosition);
-
+            //paths = AStarPather.compute_path(PositionConverter.WorldToGridPos(gameObject.transform.position), finalTargetPosition);
+            paths = AStarPather.compute_path_with_reserve(PositionConverter.WorldToGridPos(gameObject.transform.position),
+                finalTargetPosition, reservedPaths);
             // if imposible not move
             if (paths.Count > 0)
             {
