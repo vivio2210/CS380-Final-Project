@@ -1,3 +1,4 @@
+using Script;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -74,10 +75,9 @@ public class CooperativeCenter : MonoBehaviour
         ColorMap();
     }
 
-    public void EnemyVisionModeChange()
+    public void EnemyVisionModeChange(GameSetting.EnemyVisionMode mode)
     {
-        enemyVisionMode++;
-        enemyVisionMode = enemyVisionMode % 3;
+        enemyVisionMode = (int)mode;
         if (enemyVisionMode == 0)
         {
 
@@ -91,21 +91,37 @@ public class CooperativeCenter : MonoBehaviour
             EnemyPropagationMap.initialize();
         }
     }
-    public void EnemyBehaviorChange()
+    public void EnemyBehaviorChange(GameSetting.EnemyMode mode)
     {
         for (int i = 0; i < enemyAgents.Length; i++)
         {
-            enemyAgents[i].ChangeBehaviorMode();
+            enemyAgents[i].ChangeBehaviorMode(mode);
         }
     }
-    public void PlayerControlChange()
+    public void PlayerControlChange(GameSetting.PlayerMode mode)
     {
-        playerControl.useManualControl = !playerControl.useManualControl;
+        if (mode == 0)
+        {
+            playerControl.useManualControl = true;
+        }
+        else
+        {
+            playerControl.useManualControl = false;
+        }
+        
     }
-    public void PlayerDeadModeChange()
+    public void PlayerDeadModeChange(GameSetting.EnemyCaptureMode mode)
     {
-        playerControl.hitboxChecker.immortal = !playerControl.hitboxChecker.immortal;
-        playerControl.surroundMode = !playerControl.surroundMode;
+        if (mode == 0)
+        {
+            playerControl.hitboxChecker.immortal = false;
+            playerControl.surroundMode = false;
+        }
+        else 
+        {
+            playerControl.hitboxChecker.immortal = true;
+            playerControl.surroundMode = true;
+        }
     }
 
     public void EnemyVision()

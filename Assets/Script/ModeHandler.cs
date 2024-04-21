@@ -1,3 +1,4 @@
+using Script;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -28,37 +29,37 @@ public class ModeHandler : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
-    public void EnemyVisionModeChange()
+    public void EnemyVisionModeChange(GameSetting.EnemyVisionMode mode)
     {
         if (_cooperativeCenter == null)
         {
             _cooperativeCenter = FindObjectOfType<CooperativeCenter>();
         }
-        _cooperativeCenter.EnemyVisionModeChange();
+        _cooperativeCenter.EnemyVisionModeChange(mode);
     }
-    public void EnemyBehaviorChange()
+    public void EnemyBehaviorChange(GameSetting.EnemyMode mode)
     {
         if (_cooperativeCenter == null)
         {
             _cooperativeCenter = FindObjectOfType<CooperativeCenter>();
         }
-        _cooperativeCenter.EnemyBehaviorChange();
+        _cooperativeCenter.EnemyBehaviorChange(mode);
     }
-    public void PlayerControlChange()
+    public void PlayerControlChange(GameSetting.PlayerMode mode)
     {
         if (_cooperativeCenter == null)
         {
             _cooperativeCenter = FindObjectOfType<CooperativeCenter>();
         }
-        _cooperativeCenter.PlayerControlChange();
+        _cooperativeCenter.PlayerControlChange(mode);
     }
 
-    public void PlayerDeadModeChange()
+    public void PlayerDeadModeChange(GameSetting.EnemyCaptureMode mode)
     {
         if (_cooperativeCenter == null)
         {
             _cooperativeCenter = FindObjectOfType<CooperativeCenter>();
         }
-        _cooperativeCenter.PlayerDeadModeChange();
+        _cooperativeCenter.PlayerDeadModeChange(mode);
     }
 }

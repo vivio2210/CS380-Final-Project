@@ -12237,6 +12237,7 @@ MonoBehaviour:
     posx: 0
     posz: 0
   currentFacingDirection: {x: 0, y: 0, z: 1}
+  surroundMode: 0
 --- !u!65 &587367510
 BoxCollider:
   m_ObjectHideFlags: 0

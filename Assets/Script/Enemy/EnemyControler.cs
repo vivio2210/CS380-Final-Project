@@ -1,3 +1,4 @@
+using Script;
 using Sirenix.OdinInspector;
 using System;
 using System.Collections;
@@ -96,9 +97,9 @@ public class EnemyControler : MoveableAgent
         //    }
         //}
     }
-    public void ChangeBehaviorMode()
+    public void ChangeBehaviorMode(GameSetting.EnemyMode mode)
     {
-        if (!useCooperative)
+        if (mode != 0)
         {
             useCooperative = true;
             pathManager = cooperativePathManager;

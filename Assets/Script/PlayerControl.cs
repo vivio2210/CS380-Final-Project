@@ -39,7 +39,7 @@ public class PlayerControl : MoveableAgent
 
     [SerializeField]
     public Vector3 currentFacingDirection = new Vector3(0, 0, 1);
-    [NonSerialized]
+
     public bool surroundMode = false;
 
     private Vector3 currentTargetPosition = new Vector3(0, 0, 0);
