@@ -70,6 +70,24 @@ public class EnemyControler : MoveableAgent
     private void Update()
     {
         MoveToNextPosition();
+        DrawPathLine();
+        //if (useCooperative)
+        //{
+        //    if (currentState != Enemy_State.ES_WANDER)
+        //    {
+        //        lineRenderer.enabled = true;
+        //        DrawPathLine();
+        //    }
+        //    else
+        //    {
+        //        lineRenderer.enabled = false;
+        //    }
+        //}
+    }
+
+    public void CustomUpdate()
+    {
+        MoveToNextPosition();
         if (useCooperative)
         {
             if (currentState != Enemy_State.ES_WANDER)
@@ -83,6 +101,7 @@ public class EnemyControler : MoveableAgent
             }
         }
     }
+
     private void DrawPathLine()
     {
         lineRenderer.positionCount = paths.Count;
@@ -95,8 +114,8 @@ public class EnemyControler : MoveableAgent
     {
         if (firstStep >= 2 || paths.Count == 0)
         {
-            finalTargetPosition = pathManager.SelectTargetPostion(player, playerControl.currentFacingDirection,
-                gameObject.transform, otherPosition, currentState);
+            ChooseFinalPosition();
+
             //paths = AStarPather.compute_path(PositionConverter.WorldToGridPos(gameObject.transform.position), finalTargetPosition);
             paths = AStarPather.compute_path_with_reserve(PositionConverter.WorldToGridPos(gameObject.transform.position),
                 finalTargetPosition, reservedPaths);
@@ -112,13 +131,32 @@ public class EnemyControler : MoveableAgent
 
     }
 
+    private void ChooseFinalPosition()
+    {
+        if (currentState != Enemy_State.ES_WANDER)
+        {
+            finalTargetPosition = pathManager.SelectTargetPostion(player, playerControl.currentFacingDirection,
+                    gameObject.transform, otherPosition, currentState);
+        }
+        else
+        {
+            CooperativeCenter center = FindObjectOfType<CooperativeCenter>();
+            finalTargetPosition = center.NearestWander(PositionConverter.WorldToGridPos(gameObject.transform.position));
+            if (finalTargetPosition.posx == -1 && finalTargetPosition.posz == -1)
+            {
+                finalTargetPosition = pathManager.SelectTargetPostion(player, playerControl.currentFacingDirection,
+                    gameObject.transform, otherPosition, currentState);
+            }
+        }
+    }
+
     private void MoveToNextPosition()
     {
-        if (stepCount >= stepBeforeCompute)
-        {
-            SetNewTargetPosition();
-            stepCount = 0;
-        }
+        //if (stepCount >= stepBeforeCompute)
+        //{
+        //    SetNewTargetPosition();
+        //    stepCount = 0;
+        //}
 
         if (paths.Count > 0)
         {
@@ -134,13 +172,23 @@ public class EnemyControler : MoveableAgent
                     CooperativeCenter center = FindObjectOfType<CooperativeCenter>();
                     center.SetLastSeenPlayerPosition(PositionConverter.WorldToGridPos(player.position));
                 }
-                if (useCooperative && currentState == Enemy_State.ES_CHASE)
+                if (useCooperative)
                 {
                     CooperativeCenter center = FindObjectOfType<CooperativeCenter>();
                     Gridpos tempPosition = PositionConverter.WorldToGridPos(gameObject.transform.position);
-                    if (center.lastSeenPlayerPosition.posx == tempPosition.posx && center.lastSeenPlayerPosition.posz == tempPosition.posz)
+                    if (currentState == Enemy_State.ES_CHASE)
                     {
-                        center.ResetTasks();
+                        if (center.lastSeenPlayerPosition.posx == tempPosition.posx && center.lastSeenPlayerPosition.posz == tempPosition.posz)
+                        {
+                            center.ResetTasks();
+                        }
+                    }
+                    else if (currentState == Enemy_State.ES_WANDER)
+                    {
+                        if(center.ContainInReservedWanderSpaces(tempPosition))
+                        {
+                            center.RemoveReservedWanderSpaces(tempPosition);
+                        }    
                     }
                 }
 

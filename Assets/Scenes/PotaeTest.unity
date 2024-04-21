@@ -4467,7 +4467,7 @@ PrefabInstance:
     - target: {fileID: 7621753357268490678, guid: dd7e307a9f0a8284a807c4ea93751609,
         type: 3}
       propertyPath: speed
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 7621753357268490678, guid: dd7e307a9f0a8284a807c4ea93751609,
         type: 3}
@@ -4482,17 +4482,17 @@ PrefabInstance:
     - target: {fileID: 7621753357268490678, guid: dd7e307a9f0a8284a807c4ea93751609,
         type: 3}
       propertyPath: wanderColor.b
-      value: 1
+      value: 0.54088044
       objectReference: {fileID: 0}
     - target: {fileID: 7621753357268490678, guid: dd7e307a9f0a8284a807c4ea93751609,
         type: 3}
       propertyPath: wanderColor.g
-      value: 1
+      value: 0.54088044
       objectReference: {fileID: 0}
     - target: {fileID: 7621753357268490678, guid: dd7e307a9f0a8284a807c4ea93751609,
         type: 3}
       propertyPath: wanderColor.r
-      value: 1
+      value: 0.54088044
       objectReference: {fileID: 0}
     - target: {fileID: 7621753357268490678, guid: dd7e307a9f0a8284a807c4ea93751609,
         type: 3}
@@ -5685,7 +5685,7 @@ PrefabInstance:
     - target: {fileID: 7621753357268490678, guid: dd7e307a9f0a8284a807c4ea93751609,
         type: 3}
       propertyPath: speed
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 7621753357268490678, guid: dd7e307a9f0a8284a807c4ea93751609,
         type: 3}
@@ -7608,7 +7608,7 @@ PrefabInstance:
     - target: {fileID: 7621753357268490678, guid: dd7e307a9f0a8284a807c4ea93751609,
         type: 3}
       propertyPath: speed
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 7621753357268490678, guid: dd7e307a9f0a8284a807c4ea93751609,
         type: 3}
@@ -12222,13 +12222,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 4
-  useManualControl: 0
+  useManualControl: 1
   Camera: {fileID: 963194227}
-  enemies:
-  - {fileID: 1110504528}
-  - {fileID: 766019967}
-  - {fileID: 621276733}
-  - {fileID: 1617649128}
+  enemies: []
   stepBeforeCompute: 4
   currentTargetPosition_Vec3: {x: 0, y: 0, z: 0}
   currentGridPosition:
@@ -33179,7 +33175,7 @@ PrefabInstance:
     - target: {fileID: 7621753357268490678, guid: dd7e307a9f0a8284a807c4ea93751609,
         type: 3}
       propertyPath: speed
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 7621753357268490678, guid: dd7e307a9f0a8284a807c4ea93751609,
         type: 3}
@@ -34008,6 +34004,11 @@ PrefabInstance:
       propertyPath: player
       value: 
       objectReference: {fileID: 587367507}
+    - target: {fileID: 2260984602027874741, guid: a6631742f9bb54b48850313f42c224b3,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2260984602027874741, guid: a6631742f9bb54b48850313f42c224b3,
         type: 3}
       propertyPath: playerControl

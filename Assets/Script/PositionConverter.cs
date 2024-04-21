@@ -66,6 +66,11 @@ public class PositionConverter
 
 public class MapChecker 
 {
+    public static bool IsValid(int posx, int posz)
+    {
+        return (posx >= 0 && posx < 20) && (posz >= 0 && posz < 20);
+    }
+
     public static bool IsWall(Gridpos gridpos)
     {
         RaycastHit hit;

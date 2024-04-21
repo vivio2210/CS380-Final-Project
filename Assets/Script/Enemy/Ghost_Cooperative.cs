@@ -21,7 +21,7 @@ public class Ghost_Cooperative : EnemyPathManager
         //Debug.Log(mode);
         if (mode == Enemy_State.ES_WANDER)
         {
-            return Wander(playerPosition, selfPosition);
+            return Wander(playerPosition, selfPosition, otherPosition);
         }
         else if (mode == Enemy_State.ES_CHASE)
         {
@@ -33,12 +33,12 @@ public class Ghost_Cooperative : EnemyPathManager
         }
         else
         {
-            return Wander(playerPosition, selfPosition);
+            return Wander(playerPosition, selfPosition, otherPosition);
         }
 
     }
 
-    private Gridpos Wander(Transform playerPosition, Transform selfPosition)
+    private Gridpos Wander(Transform playerPosition, Transform selfPosition, Vector3 otherPosition)
     {
         // Wander
         Gridpos Target;

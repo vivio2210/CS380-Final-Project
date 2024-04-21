@@ -1,6 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
+using static UnityEditor.PlayerSettings;
 using static UnityEngine.UI.ContentSizeFitter;
 
 public enum Enemy_State
@@ -35,40 +38,159 @@ public class CooperativeCenter : MonoBehaviour
 
     private FloorColorController floorColorController;
 
+    [NonSerialized]
+    public List<Gridpos> reservedWanderSpaces = new List<Gridpos>();
+
     public void Start()
     {
         floorColorController = FindObjectOfType<FloorColorController>();
         enemyAgents = FindObjectsOfType<EnemyControler>();
         enemiesAssigned = new bool[enemyAgents.Length];
         ClearEnemiesAssigned();
+        EnemyPropagationMap.initialize();
+        //EnemyPropagationMap.layer[0, 0] = 1;
+        //EnemyPropagationMap.layer[9, 9] = -1;
         //AStarPather.Test();
     }
 
     public void Update()
     {
-        floorColorController.ClearColor();
-        List<Gridpos> rooms = AStarPather.GetRoomGrid(PositionConverter.WorldToGridPos(player.position));
-        Gridpos temp;
+        if (Input.GetKeyDown(KeyCode.O))
+        {
+            EnemyPropagationMap.initialize();
+        }
+        ColorEnemyVision();
+        ColorMapPropagation();
+    }
+    public void ColorEnemyVision()
+    {
+        List<Gridpos> enemySeenPaths = new List<Gridpos>();
 
-        for (int i = 0; i < AStarPather.branchTrackLists.Count; i++)
+        for (int k = 0; k < enemyAgents.Length; k++)
         {
-            temp = AStarPather.branchTrackLists[i];
-            floorColorController.ChangeFloorColor(temp.posx, temp.posz, doorColor);
+            Gridpos enemyAgentsPosition = PositionConverter.WorldToGridPos(enemyAgents[k].gameObject.transform.position);
+            for (int i = 0; i < 20; i++)
+            {
+                for (int j = 0; j < 20; j++)
+                {
+                    if (EnemyPropagationMap.layer[i, j] < 0.0f)
+                    {
+                        EnemyPropagationMap.layer[i, j] = 0.0f;
+                    }
+                    if (AStarPather.IsClearPath(enemyAgentsPosition, new Gridpos(i, j)))
+                    {
+                        enemySeenPaths.Add(new Gridpos(i, j));
+                    }
+                }
+            }
         }
-        for (int i = 0; i < rooms.Count; i++)
+        for (int i = 0; i < enemySeenPaths.Count; i++)
         {
-            temp = rooms[i];
-            floorColorController.ChangeFloorColor(temp.posx, temp.posz, roomColor);
+            EnemyPropagationMap.layer[enemySeenPaths[i].posx, enemySeenPaths[i].posz] = -1;
         }
-        if (lastSeenPlayerPosition.posx != -1 && lastSeenPlayerPosition.posz != -1)
+    }
+    public void ColorMapPropagation()
+    {
+        EnemyPropagationMap.Propagate(Time.deltaTime);
+        EnemyPropagationMap.NormalizePropagate(Time.deltaTime);
+        float[,] mapLayer = EnemyPropagationMap.layer;
+        for (int i = 0; i < 20; i++)
         {
-            floorColorController.ChangeFloorColor(lastSeenPlayerPosition.posx, lastSeenPlayerPosition.posz, lastSeenPlayerPointColor);
+            for (int j = 0; j < 20; j++)
+            {
+                if (mapLayer[i, j] < 0.0f)
+                {
+                    floorColorController.ChangeFloorColor(i, j, new Color(0.5f, 0.5f, 1.0f, 1.0f));
+                }
+                else
+                {
+                    floorColorController.ChangeFloorColor(i, j, new Color(1, 1.0f - mapLayer[i, j], 1.0f - mapLayer[i, j], 1.0f));
+                }
+
+            }
+        }
+    }
+
+    public Gridpos NearestWander(Gridpos pos)
+    {
+        float highestValue = -10.0f;
+        int indexI = -1;
+        int indexJ = -1;
+        for (int i = 0; i < 20; i++)
+        {
+            for (int j = 0; j < 20; j++)
+            {
+                if (!ContainInReservedWanderSpaces(new Gridpos(i,j)))
+                {
+                    float distance = AStarPather.FindDistance(pos.posx, pos.posz, i, j);
+                    distance = 400000 - distance;
+                    float value = EnemyPropagationMap.layer[i, j] * distance;
+                    if (value > highestValue)
+                    {
+                        highestValue = value;
+                        indexI = i;
+                        indexJ = j;
+                    }
+                    
+                }
+            }
+        }
+        if (highestValue <= 0.1f)
+        {
+            return new Gridpos(-1, -1);
+        }
+        else 
+        {
+            reservedWanderSpaces.Add(new Gridpos(indexI, indexJ));
+        }
+        return new Gridpos(indexI, indexJ);
+    }
+
+    public bool ContainInReservedWanderSpaces(Gridpos pos) 
+    {
+        bool founded = false;
+        for (int i = 0; i < reservedWanderSpaces.Count; i++)
+        {
+            float distance = AStarPather.FindDistance(pos.posx, pos.posz, reservedWanderSpaces[i].posx, reservedWanderSpaces[i].posz);
+            //if (reservedWanderSpaces[i].posx == pos.posx && reservedWanderSpaces[i].posz == pos.posz)
+            if (distance <= 4.0f)
+            {
+                founded = true;
+            }
+        }
+        return founded; 
+    }
+    public void RemoveReservedWanderSpaces(Gridpos reservedPos)
+    {
+        for (int i = 0; i < reservedWanderSpaces.Count; i++)
+        {
+            if (reservedWanderSpaces[i].posx == reservedPos.posx && reservedWanderSpaces[i].posz == reservedPos.posz)
+            {
+                reservedWanderSpaces.RemoveAt(i);
+                break;
+            }
         }
     }
 
     public void SetLastSeenPlayerPosition(Gridpos pos)
     {
         lastSeenPlayerPosition = pos;
+        for (int i = 0; i < 20; i++)
+        {
+            for (int j = 0; j < 20; j++)
+            {
+                if (pos.posx == i && pos.posz == j)
+                {
+                    EnemyPropagationMap.layer[i, j] = 1.0f;
+                }
+                else
+                {
+                    EnemyPropagationMap.layer[i, j] = 0.0f;
+                }
+            }
+        }
+        EnemyPropagationMap.Propagate(Time.deltaTime);
+        EnemyPropagationMap.NormalizePropagate(Time.deltaTime);
         AssignTasks();
     }
 
@@ -152,9 +274,6 @@ public class CooperativeCenter : MonoBehaviour
             {
                 continue;
             }
-
-
-
         }
     }
 
@@ -166,7 +285,7 @@ public class CooperativeCenter : MonoBehaviour
 
     public void AssignTaskWander(int index)
     {
-        enemyAgents[index].SetMode(Enemy_State.ES_CHASE);
+        enemyAgents[index].SetMode(Enemy_State.ES_WANDER);
     }
 
     public void ClearEnemiesAssigned()
