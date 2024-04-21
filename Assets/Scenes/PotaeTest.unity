@@ -20591,6 +20591,21 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4656560600499329905, guid: 194442435371f6745b5a7a6e32c9b78c,
         type: 3}
+      propertyPath: m_Size.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4656560600499329905, guid: 194442435371f6745b5a7a6e32c9b78c,
+        type: 3}
+      propertyPath: m_Size.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4656560600499329905, guid: 194442435371f6745b5a7a6e32c9b78c,
+        type: 3}
+      propertyPath: m_Size.z
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4656560600499329905, guid: 194442435371f6745b5a7a6e32c9b78c,
+        type: 3}
       propertyPath: m_IsTrigger
       value: 0
       objectReference: {fileID: 0}
@@ -20623,6 +20638,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5649942028700400021, guid: 194442435371f6745b5a7a6e32c9b78c,
+        type: 3}
+      propertyPath: m_TagString
+      value: Enemy
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -33932,6 +33952,21 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1622881355283402068, guid: a6631742f9bb54b48850313f42c224b3,
         type: 3}
+      propertyPath: m_Size.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1622881355283402068, guid: a6631742f9bb54b48850313f42c224b3,
+        type: 3}
+      propertyPath: m_Size.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1622881355283402068, guid: a6631742f9bb54b48850313f42c224b3,
+        type: 3}
+      propertyPath: m_Size.z
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1622881355283402068, guid: a6631742f9bb54b48850313f42c224b3,
+        type: 3}
       propertyPath: m_IsTrigger
       value: 0
       objectReference: {fileID: 0}
@@ -33949,6 +33984,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1761589806286942128, guid: a6631742f9bb54b48850313f42c224b3,
+        type: 3}
+      propertyPath: m_TagString
+      value: Enemy
       objectReference: {fileID: 0}
     - target: {fileID: 2260984602027874741, guid: a6631742f9bb54b48850313f42c224b3,
         type: 3}

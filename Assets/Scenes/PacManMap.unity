@@ -667,6 +667,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 3
+  useManualControl: 0
   Camera: {fileID: 73256384}
   enemies:
   - {fileID: 1417040213}
@@ -6404,13 +6405,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 4
   Camera: {fileID: 73256384}
-  currentGridPosition:
-    posx: 0
-    posz: 0
-  currentTargetGridPosition:
-    posx: 0
-    posz: 0
-  currentFacingDirection: {x: 0, y: 0, z: 0}
 --- !u!23 &339465413
 MeshRenderer:
   m_ObjectHideFlags: 0

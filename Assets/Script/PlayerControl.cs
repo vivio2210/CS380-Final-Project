@@ -23,7 +23,7 @@ public class PlayerControl : MoveableAgent
     private GameObject[] enemies = null;
 
     private int mapSize = 20;
-    private int enemyDetectingArea = 25; // should be odd number
+    private int enemyDetectingArea = 41; // should be odd number
 
     private int pathCount = 0;
 
@@ -86,7 +86,7 @@ public class PlayerControl : MoveableAgent
         if (enemies != null)
         {
             // if have path
-            if (currentPath.Count > 0 && pathCount < stepBeforeCompute)
+            if (currentPath.Count > 0 && pathCount <= stepBeforeCompute)
             {
                 if (math.abs(currentTargetPosition_Vec3.x - gameObject.transform.position.x) <= 0.1f && math.abs(currentTargetPosition_Vec3.z - gameObject.transform.position.z) <= 0.1f)
                 {
@@ -129,6 +129,19 @@ public class PlayerControl : MoveableAgent
                             else if (distance <= 9.0f)
                                 distance *= 0.8f;
 
+                            //if (distance <= 10.0f)
+                            //    distance *= 0.4f;
+                            //else if (distance <= 16.0f)
+                            //    distance *= 0.2f;
+                            //else if (distance <= 25.0f)
+                            //    distance *= 0.0f;
+                            //else if (distance <= 49.0f)
+                            //    distance *= 0.4f;
+                            //else if (distance <= 81.0f)
+                            //    distance *= 0.6f;
+                            //else if (distance <= 100.0f)
+                            //    distance *= 0.8f;
+
                             totalDistance += distance;
                         }
 
@@ -137,10 +150,20 @@ public class PlayerControl : MoveableAgent
                             maxDistance = totalDistance;
                             farthestGrid.posx = currentGrid.posx;
                             farthestGrid.posz = currentGrid.posz;
+
+                            farthestPoint.posx = currentGrid.posx;
+                            farthestPoint.posz = currentGrid.posz;
                         }
                     }
                 }
             }
+
+            //GameObject floor = GameObject.Find("Floor");
+            //FloorColorController floorController = floor.GetComponent<FloorColorController>();
+
+            //Color color = new Color(0.0f, 1.0f, 0.0f, 1.0f);
+
+            //floorController.ChangeFloorColor(farthestPoint.posx, farthestPoint.posz, color);
 
             //currentTargetPosition = farthestGrid;
             //Agent.SetDestination(PositionConverter.GridPosToWorld(farthestGrid));
@@ -153,10 +176,24 @@ public class PlayerControl : MoveableAgent
                 currentGridPosition = new Gridpos(currentPath[0].posx, currentPath[0].posz);
                 currentPath.Add(currentPath[currentPath.Count - 1]);
                 currentPath.RemoveAt(0);
+
+
+                //Debug.Log("player gris pos: " + playerGrisPos.posx + ", " + playerGrisPos.posz);
+                //Debug.Log("current grid pos: " + currentGridPosition.posx + ", " + currentGridPosition.posz);
+                if (currentPath.Count >= 1 && currentPath[currentPath.Count - 1] == playerGrisPos)
+                {
+                    //Debug.Log("currentGridPosition == playerGrisPos");
+                    return;
+                }
+                else
+                {
+                    currentTargetPosition_Vec3 = PositionConverter.GridPosToWorld(currentGridPosition);
+                    base.SetDestination(currentTargetPosition_Vec3);
+                }
             }
 
-            currentTargetPosition_Vec3 = PositionConverter.GridPosToWorld(currentGridPosition);
-            base.SetDestination(currentTargetPosition_Vec3);
+            //currentTargetPosition_Vec3 = PositionConverter.GridPosToWorld(currentGridPosition);
+            //base.SetDestination(currentTargetPosition_Vec3);
 
             pathCount = 0;
         }

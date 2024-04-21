@@ -32,7 +32,7 @@ public class EnemyControler : MoveableAgent
     public List<Gridpos> reservedPaths = new List<Gridpos>();
 
     [SerializeField]
-    private Vector3 currentTargetPosition;
+    public Vector3 currentTargetPosition;
 
     [SerializeField]
     private int stepBeforeCompute = 10;
