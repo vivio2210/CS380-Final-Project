@@ -145,7 +145,7 @@ PrefabInstance:
     - target: {fileID: 2515806039516012808, guid: 655ca791b5d86384abdf96bbc2f56176,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2736848677341697805, guid: 655ca791b5d86384abdf96bbc2f56176,
         type: 3}
@@ -157,6 +157,11 @@ PrefabInstance:
       propertyPath: player
       value: 
       objectReference: {fileID: 587367507}
+    - target: {fileID: 2736848677341697805, guid: 655ca791b5d86384abdf96bbc2f56176,
+        type: 3}
+      propertyPath: target
+      value: 
+      objectReference: {fileID: 1617649133}
     - target: {fileID: 2736848677341697805, guid: 655ca791b5d86384abdf96bbc2f56176,
         type: 3}
       propertyPath: otherEnemy
@@ -4507,7 +4512,7 @@ PrefabInstance:
     - target: {fileID: 7986893522650296243, guid: dd7e307a9f0a8284a807c4ea93751609,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -5710,7 +5715,7 @@ PrefabInstance:
     - target: {fileID: 7986893522650296243, guid: dd7e307a9f0a8284a807c4ea93751609,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -7633,7 +7638,7 @@ PrefabInstance:
     - target: {fileID: 7986893522650296243, guid: dd7e307a9f0a8284a807c4ea93751609,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -8381,7 +8386,7 @@ PrefabInstance:
     - target: {fileID: 3547534664829354887, guid: 0b5f06769ba8b8f4f80f22410eb22df8,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3902812073873683842, guid: 0b5f06769ba8b8f4f80f22410eb22df8,
         type: 3}
@@ -12223,6 +12228,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 4
   useManualControl: 1
+  hitboxChecker: {fileID: 587367511}
   Camera: {fileID: 963194227}
   enemies: []
   stepBeforeCompute: 4
@@ -12264,6 +12270,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee3c73b12282653479a978b6757a8ac4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  immortal: 0
 --- !u!54 &587367512
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -18905,11 +18912,13 @@ MonoBehaviour:
     posx: -1
     posz: -1
   player: {fileID: 587367507}
+  playerControl: {fileID: 0}
   enemyAgents: []
   enemiesAssigned: 
   doorColor: {r: 1, g: 0.53333336, b: 0, a: 0}
   roomColor: {r: 0, g: 1, b: 1, a: 0}
   lastSeenPlayerPointColor: {r: 1, g: 0, b: 0, a: 0}
+  enemyVisionMode: 0
 --- !u!43 &1041125235
 Mesh:
   m_ObjectHideFlags: 0
@@ -20666,7 +20675,7 @@ PrefabInstance:
     - target: {fileID: 5649942028700400021, guid: 194442435371f6745b5a7a6e32c9b78c,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -33200,7 +33209,7 @@ PrefabInstance:
     - target: {fileID: 7986893522650296243, guid: dd7e307a9f0a8284a807c4ea93751609,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -33992,7 +34001,7 @@ PrefabInstance:
     - target: {fileID: 1761589806286942128, guid: a6631742f9bb54b48850313f42c224b3,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2260984602027874741, guid: a6631742f9bb54b48850313f42c224b3,
         type: 3}
@@ -43411,6 +43420,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee3c73b12282653479a978b6757a8ac4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  immortal: 0
 --- !u!54 &2134953484
 Rigidbody:
   m_ObjectHideFlags: 0

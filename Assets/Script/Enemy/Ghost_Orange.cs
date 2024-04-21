@@ -10,8 +10,8 @@ public class Ghost_Orange : EnemyPathManager
     public override Gridpos SelectTargetPostion(Transform playerPosition, Vector3 playerFaceDirection,
         Transform selfPosition, Vector3 otherPosition, Enemy_State mode)
     {
-        float distance = math.pow(otherPosition.x - playerPosition.position.x,2) + math.pow(otherPosition.z - playerPosition.position.z, 2);
-        if (distance > 64.0f)
+        float distance = math.sqrt(math.pow(otherPosition.x - playerPosition.position.x,2) + math.pow(otherPosition.z - playerPosition.position.z, 2));
+        if (distance > 8.0f)
         {
             return PositionConverter.WorldToGridPos(playerPosition.position);
         }

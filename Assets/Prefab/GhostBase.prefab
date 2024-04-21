@@ -125,6 +125,8 @@ MonoBehaviour:
   otherPosition: {x: 0, y: 0, z: 0}
   playerControl: {fileID: 0}
   pathManager: {fileID: 0}
+  cooperativePathManager: {fileID: 0}
+  pacManPathManager: {fileID: 0}
   targetTimer: 3
   finalTargetPosition:
     posx: 0
@@ -134,9 +136,9 @@ MonoBehaviour:
   stepCount: 0
   useCooperative: 0
   currentState: 0
-  wanderColor: {r: 1, g: 1, b: 1, a: 1}
-  chaseColor: {r: 1, g: 1, b: 1, a: 1}
-  CornerColor: {r: 1, g: 1, b: 1, a: 1}
+  wanderColor: {r: 0.55345905, g: 0.55345905, b: 0.55345905, a: 1}
+  chaseColor: {r: 1, g: 0, b: 0, a: 1}
+  CornerColor: {r: 0, g: 0.6993623, b: 1, a: 1}
 --- !u!120 &5838640123273679370
 LineRenderer:
   serializedVersion: 2

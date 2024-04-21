@@ -17,6 +17,9 @@ public class EnemyControler : MoveableAgent
     public PlayerControl playerControl;
     public EnemyPathManager pathManager;
 
+    public EnemyPathManager cooperativePathManager;
+    public EnemyPathManager pacManPathManager;
+
     [SerializeField]
     private float targetTimer = 3.0f;
 
@@ -35,17 +38,22 @@ public class EnemyControler : MoveableAgent
     [SerializeField]
     private int stepCount = 0;
 
+    [SerializeField]
+    public Enemy_State currentState = Enemy_State.ES_WANDER;
+
     [Header("Cooperative Setting")]
     [SerializeField]
     public bool useCooperative = false;
-    [SerializeField]
-    public Enemy_State currentState = Enemy_State.ES_WANDER;
+
     [SerializeField]
     public UnityEngine.Color wanderColor = UnityEngine.Color.white;
     [SerializeField]
     public UnityEngine.Color chaseColor = UnityEngine.Color.white;
     [SerializeField]
     public UnityEngine.Color CornerColor = UnityEngine.Color.white;
+
+    [SerializeField]
+    public UnityEngine.Color PacmanColor = UnityEngine.Color.white;
 
     private LineRenderer lineRenderer;
 
@@ -71,18 +79,38 @@ public class EnemyControler : MoveableAgent
     {
         MoveToNextPosition();
         DrawPathLine();
-        //if (useCooperative)
+        //if (Input.GetKeyDown(KeyCode.O))
         //{
-        //    if (currentState != Enemy_State.ES_WANDER)
+        //    if (!useCooperative)
         //    {
-        //        lineRenderer.enabled = true;
-        //        DrawPathLine();
+        //        useCooperative = true;
+        //        pathManager = cooperativePathManager;
+        //        SetMode(Enemy_State.ES_WANDER);
         //    }
         //    else
         //    {
-        //        lineRenderer.enabled = false;
+        //        useCooperative = false;
+        //        pathManager = pacManPathManager;
+        //        Renderer renderer = GetComponent<Renderer>();
+        //        renderer.material.color = PacmanColor;
         //    }
         //}
+    }
+    public void ChangeBehaviorMode()
+    {
+        if (!useCooperative)
+        {
+            useCooperative = true;
+            pathManager = cooperativePathManager;
+            SetMode(Enemy_State.ES_WANDER);
+        }
+        else
+        {
+            useCooperative = false;
+            pathManager = pacManPathManager;
+            Renderer renderer = GetComponent<Renderer>();
+            renderer.material.color = PacmanColor;
+        }
     }
 
     public void CustomUpdate()
@@ -135,6 +163,10 @@ public class EnemyControler : MoveableAgent
     {
         if (currentState != Enemy_State.ES_WANDER)
         {
+            if (target != null)
+            {
+                otherPosition = target.position;
+            }
             finalTargetPosition = pathManager.SelectTargetPostion(player, playerControl.currentFacingDirection,
                     gameObject.transform, otherPosition, currentState);
         }

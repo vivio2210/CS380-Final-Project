@@ -19,6 +19,33 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: c9d32f1a80f05b047b86d4c088197339,
         type: 2}
+    - target: {fileID: 3505034074872758732, guid: 6dc967b0d5976c34abde95977426cd55,
+        type: 3}
+      propertyPath: PacmanColor.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3505034074872758732, guid: 6dc967b0d5976c34abde95977426cd55,
+        type: 3}
+      propertyPath: PacmanColor.g
+      value: 0.570981
+      objectReference: {fileID: 0}
+    - target: {fileID: 3505034074872758732, guid: 6dc967b0d5976c34abde95977426cd55,
+        type: 3}
+      propertyPath: PacmanColor.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3505034074872758732, guid: 6dc967b0d5976c34abde95977426cd55,
+        type: 3}
+      propertyPath: pacManPathManager
+      value: 
+      objectReference: {fileID: 11400000, guid: c9d32f1a80f05b047b86d4c088197339,
+        type: 2}
+    - target: {fileID: 3505034074872758732, guid: 6dc967b0d5976c34abde95977426cd55,
+        type: 3}
+      propertyPath: cooperativePathManager
+      value: 
+      objectReference: {fileID: 11400000, guid: 6bb39b62f1b117e4da81c403a4204677,
+        type: 2}
     - target: {fileID: 4014586298793670601, guid: 6dc967b0d5976c34abde95977426cd55,
         type: 3}
       propertyPath: m_Name

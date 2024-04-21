@@ -9,7 +9,10 @@ using System.Collections.Generic;
 public class PlayerControl : MoveableAgent
 {
     [SerializeField]
-    private bool useManualControl = false;
+    public bool useManualControl = false;
+
+    public HitboxChecker hitboxChecker;
+
     [SerializeField]
     private Camera Camera = null;
     //private NavMeshAgent Agent;
@@ -36,7 +39,8 @@ public class PlayerControl : MoveableAgent
 
     [SerializeField]
     public Vector3 currentFacingDirection = new Vector3(0, 0, 1);
-
+    [NonSerialized]
+    public bool surroundMode = false;
 
     private Vector3 currentTargetPosition = new Vector3(0, 0, 0);
     private Gridpos currentTargetGridPosition = new Gridpos(0, 0);
@@ -161,7 +165,7 @@ public class PlayerControl : MoveableAgent
     private void SetFaceDirection()
     {
         Gridpos playerPositon = PositionConverter.WorldToGridPos(gameObject.transform.position);
-        Gridpos goalPositon = PositionConverter.WorldToGridPos(currentTargetPosition_Vec3);
+        Gridpos goalPositon = PositionConverter.WorldToGridPos(currentTargetPosition);
 
         currentFacingDirection = new Vector3(playerPositon.posx - goalPositon.posx, 0, playerPositon.posz - goalPositon.posz).normalized;
     }
@@ -197,6 +201,16 @@ public class PlayerControl : MoveableAgent
                     currentTargetGridPosition = new Gridpos(currentPath[0].posx, currentPath[0].posz);
                     currentTargetPosition = PositionConverter.GridPosToWorld(currentTargetGridPosition);
                     currentPath.RemoveAt(0);
+                }
+                else
+                {
+                    if (surroundMode)
+                    {
+                        if (!MapChecker.IsWall(PositionConverter.WorldToGridPos(Hits[0].point)))
+                        {
+                            Debug.Log("Player Surrounded");
+                        }
+                    }
                 }
             }
         }

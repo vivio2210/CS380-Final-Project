@@ -4,14 +4,18 @@ using UnityEngine;
 
 public class HitboxChecker : MonoBehaviour
 {
+    public bool immortal = false;
     private void OnCollisionEnter(Collision collision)
     {
         if (collision != null)
         {
             if (collision.gameObject.tag == "Enemy")
             {
-                Debug.Log("Player Died");
-                gameObject.SetActive(false);
+                if (!immortal)
+                {
+                    Debug.Log("Player Died");
+                    gameObject.SetActive(false);
+                }
             }
         }
     }

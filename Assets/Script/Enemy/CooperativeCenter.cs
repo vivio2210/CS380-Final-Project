@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using static Script.GameSetting;
 using static UnityEditor.PlayerSettings;
 using static UnityEngine.UI.ContentSizeFitter;
 
@@ -20,6 +21,9 @@ public class CooperativeCenter : MonoBehaviour
 
     [SerializeField]
     private Transform player;
+
+    [SerializeField]
+    private PlayerControl playerControl;
 
     [SerializeField]
     public EnemyControler[] enemyAgents;
@@ -41,13 +45,16 @@ public class CooperativeCenter : MonoBehaviour
     [NonSerialized]
     public List<Gridpos> reservedWanderSpaces = new List<Gridpos>();
 
+    [SerializeField]
+    public int enemyVisionMode = 0; // 0 - Always, 1 - LOS, 2 - Propagation
+
     public void Start()
     {
         floorColorController = FindObjectOfType<FloorColorController>();
         enemyAgents = FindObjectsOfType<EnemyControler>();
         enemiesAssigned = new bool[enemyAgents.Length];
         ClearEnemiesAssigned();
-        EnemyPropagationMap.initialize();
+        //EnemyPropagationMap.initialize();
         //EnemyPropagationMap.layer[0, 0] = 1;
         //EnemyPropagationMap.layer[9, 9] = -1;
         //AStarPather.Test();
@@ -55,14 +62,53 @@ public class CooperativeCenter : MonoBehaviour
 
     public void Update()
     {
-        if (Input.GetKeyDown(KeyCode.O))
+        if (enemyVisionMode == 1)
+        {
+            EnemyVision();
+        }
+        if (enemyVisionMode == 2)
+        {
+            EnemyVision();
+            Propagation();
+        }
+        ColorMap();
+    }
+
+    public void EnemyVisionModeChange()
+    {
+        enemyVisionMode++;
+        enemyVisionMode = enemyVisionMode % 3;
+        if (enemyVisionMode == 0)
+        {
+
+        }
+        else if (enemyVisionMode == 1)
+        {
+
+        }
+        else
         {
             EnemyPropagationMap.initialize();
         }
-        ColorEnemyVision();
-        ColorMapPropagation();
     }
-    public void ColorEnemyVision()
+    public void EnemyBehaviorChange()
+    {
+        for (int i = 0; i < enemyAgents.Length; i++)
+        {
+            enemyAgents[i].ChangeBehaviorMode();
+        }
+    }
+    public void PlayerControlChange()
+    {
+        playerControl.useManualControl = !playerControl.useManualControl;
+    }
+    public void PlayerDeadModeChange()
+    {
+        playerControl.hitboxChecker.immortal = !playerControl.hitboxChecker.immortal;
+        playerControl.surroundMode = !playerControl.surroundMode;
+    }
+
+    public void EnemyVision()
     {
         List<Gridpos> enemySeenPaths = new List<Gridpos>();
 
@@ -89,22 +135,29 @@ public class CooperativeCenter : MonoBehaviour
             EnemyPropagationMap.layer[enemySeenPaths[i].posx, enemySeenPaths[i].posz] = -1;
         }
     }
-    public void ColorMapPropagation()
+    public void Propagation()
     {
         EnemyPropagationMap.Propagate(Time.deltaTime);
         EnemyPropagationMap.NormalizePropagate(Time.deltaTime);
-        float[,] mapLayer = EnemyPropagationMap.layer;
+    }
+    public void ClearColorMap()
+    {
+        floorColorController.ClearColor();
+    }
+    public void ColorMap()
+    {
         for (int i = 0; i < 20; i++)
         {
             for (int j = 0; j < 20; j++)
             {
-                if (mapLayer[i, j] < 0.0f)
+                if (EnemyPropagationMap.layer[i, j] < 0.0f)
                 {
                     floorColorController.ChangeFloorColor(i, j, new Color(0.5f, 0.5f, 1.0f, 1.0f));
                 }
                 else
                 {
-                    floorColorController.ChangeFloorColor(i, j, new Color(1, 1.0f - mapLayer[i, j], 1.0f - mapLayer[i, j], 1.0f));
+                    floorColorController.ChangeFloorColor(i, j, new Color(1, 1.0f - EnemyPropagationMap.layer[i, j],
+                        1.0f - EnemyPropagationMap.layer[i, j], 1.0f));
                 }
 
             }
@@ -175,17 +228,20 @@ public class CooperativeCenter : MonoBehaviour
     public void SetLastSeenPlayerPosition(Gridpos pos)
     {
         lastSeenPlayerPosition = pos;
-        for (int i = 0; i < 20; i++)
+        if (enemyVisionMode >= 1)
         {
-            for (int j = 0; j < 20; j++)
+            for (int i = 0; i < 20; i++)
             {
-                if (pos.posx == i && pos.posz == j)
+                for (int j = 0; j < 20; j++)
                 {
-                    EnemyPropagationMap.layer[i, j] = 1.0f;
-                }
-                else
-                {
-                    EnemyPropagationMap.layer[i, j] = 0.0f;
+                    if (pos.posx == i && pos.posz == j)
+                    {
+                        EnemyPropagationMap.layer[i, j] = 1.0f;
+                    }
+                    else
+                    {
+                        EnemyPropagationMap.layer[i, j] = 0.0f;
+                    }
                 }
             }
         }
