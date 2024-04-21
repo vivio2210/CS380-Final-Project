@@ -211,7 +211,7 @@ PrefabInstance:
     - target: {fileID: 239095274883502267, guid: f0c51fd26f2d56f49b5bdb5b01b02ed5,
         type: 3}
       propertyPath: m_Name
-      value: LevelButton
+      value: ToggleButton
       objectReference: {fileID: 0}
     - target: {fileID: 5624756522522682754, guid: f0c51fd26f2d56f49b5bdb5b01b02ed5,
         type: 3}

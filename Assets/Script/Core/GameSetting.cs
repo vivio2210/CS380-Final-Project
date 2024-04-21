@@ -17,19 +17,19 @@ namespace Script
             Auto = 1
         }
         
-        public enum CaptureMode
-        {
-            Touch = 0,
-            Surround = 1
-        }
-        
         public enum EnemyMode
         {
             Independent = 0,
             Cooperative = 1
         }
+        
+        public enum EnemyCaptureMode
+        {
+            Touch = 0,
+            Surround = 1
+        }
 
-        public enum EnemyVision
+        public enum EnemyVisionMode
         {
             Always = 0,
             LineOfSight = 1,
