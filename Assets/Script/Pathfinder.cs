@@ -567,6 +567,84 @@ public class AStarPather
         }
         return 99999f;
     }
+    public static float FindActualDistance(Gridpos start, Gridpos goal)
+    {
+        //Gridpos start = new Gridpos(x1, z1);
+        //Gridpos goal = new Gridpos(x2, z2);
+
+        if (MapChecker.IsWall(goal))
+        {
+            return 99999f;
+        }
+        ClearGridNode();
+
+        gridNodes[start.posx, start.posz].onlist = Nodelist.E_OPENLIST;
+        gridNodes[start.posx, start.posz].calurateFinalCost(goal, 0);
+        gridNodes[start.posx, start.posz].parent = null;
+        openlist.Add(gridNodes[start.posx, start.posz]);
+
+        while (openlist.Count > 0)
+        {
+            int parentNodeIndex = FindCheapestNodeIndex();
+            GridNode parentNode = openlist[parentNodeIndex];
+            openlist.RemoveAt(parentNodeIndex);
+            if (parentNode.gridPos.posx == goal.posx && parentNode.gridPos.posz == goal.posz)
+            {
+                return parentNode.finalCost;
+            }
+            parentNode.onlist = Nodelist.E_CLOSELIST;
+            for (int i = 0; i < 8; i++)
+            {
+                if (parentNode.neighbors[i])
+                {
+                    Gridpos childpos = parentNode.gridPos + surroundNeighbors[i];
+                    GridNode childNode = gridNodes[childpos.posx, childpos.posz];
+                    if (childNode.onlist == Nodelist.E_NONELIST)
+                    {
+                        if (i == 0 || i == 2 || i == 5 || i == 7) // is diaganal
+                        {
+                            childNode.calurateFinalCost(goal, parentNode.givenCost + ROOT2);
+                        }
+                        else
+                        {
+                            childNode.calurateFinalCost(goal, parentNode.givenCost + 1.0f);
+                        }
+
+                        childNode.onlist = Nodelist.E_OPENLIST;
+                        childNode.parent = parentNode;
+                        openlist.Add(childNode);
+                    }
+                    else // in open or close list
+                    {
+                        float currentfinalcost = childNode.finalCost;
+                        float newfinalcost = parentNode.givenCost + childNode.calurateHeuristic(goal);
+                        float stepDistance = -1.0f;
+                        if (i == 0 || i == 2 || i == 5 || i == 7) // is diaganal
+                        {
+                            newfinalcost += ROOT2;
+                            stepDistance = ROOT2;
+                        }
+                        else
+                        {
+                            newfinalcost += 1.0f;
+                            stepDistance = 1.0f;
+                        }
+                        if (newfinalcost < currentfinalcost)
+                        {
+                            childNode.calurateFinalCost(goal, parentNode.givenCost + stepDistance);
+                            childNode.parent = parentNode;
+                            if (childNode.onlist == Nodelist.E_CLOSELIST)
+                            {
+                                childNode.onlist = Nodelist.E_OPENLIST;
+                                openlist.Add(childNode);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return 99999f;
+    }
     public static Gridpos GetNearestBranchTrack(Gridpos start)
     {
         int index = -1;
@@ -666,4 +744,47 @@ public class AStarPather
 
         return roomGrid;
     }
+
+    public static List<Gridpos> GetDijkstraGrid(Gridpos start, int size)
+    {
+        if (branchTrackLists.Contains(start))
+        {
+            return new List<Gridpos>();
+        }
+
+        List<Gridpos> roomGrid = new List<Gridpos>();
+
+        ClearGridNode();
+        gridNodes[start.posx, start.posz].onlist = Nodelist.E_OPENLIST;
+        gridNodes[start.posx, start.posz].parent = null;
+        openlist.Add(gridNodes[start.posx, start.posz]);
+
+        while (openlist.Count > 0)
+        {
+            GridNode parentNode = openlist[0];
+            openlist.RemoveAt(0);
+            roomGrid.Add(parentNode.gridPos);
+            parentNode.onlist = Nodelist.E_CLOSELIST;
+            if (parentNode.finalCost > size)
+            {
+                break;
+            }
+            for (int i = 0; i < 8; i++)
+            {
+                if (parentNode.neighbors[i])
+                {
+                    Gridpos childpos = parentNode.gridPos + surroundNeighbors[i];
+                    GridNode childNode = gridNodes[childpos.posx, childpos.posz];
+                    if (childNode.onlist == Nodelist.E_NONELIST)
+                    {
+                        childNode.onlist = Nodelist.E_OPENLIST;
+                        openlist.Add(childNode);
+                    }
+                }
+            }
+        }
+
+        return roomGrid;
+    }
+
 };

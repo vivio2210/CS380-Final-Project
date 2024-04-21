@@ -60,6 +60,9 @@ public class EnemyControler : MoveableAgent
 
     private int firstStep = 0;
 
+    [NonSerialized]
+    public bool drawPath = false;
+
     private void Awake()
     {
         AStarPather.initialize();
@@ -79,7 +82,11 @@ public class EnemyControler : MoveableAgent
     private void Update()
     {
         MoveToNextPosition();
-        DrawPathLine();
+        if (drawPath)
+        {
+            DrawPathLine();
+        }
+
         //if (Input.GetKeyDown(KeyCode.O))
         //{
         //    if (!useCooperative)
@@ -114,21 +121,10 @@ public class EnemyControler : MoveableAgent
         }
     }
 
-    public void CustomUpdate()
+    public void SetDrawPath(bool drawpath)
     {
-        MoveToNextPosition();
-        if (useCooperative)
-        {
-            if (currentState != Enemy_State.ES_WANDER)
-            {
-                lineRenderer.enabled = true;
-                DrawPathLine();
-            }
-            else
-            {
-                lineRenderer.enabled = false;
-            }
-        }
+        drawPath = drawpath;
+        lineRenderer.enabled = drawpath;
     }
 
     private void DrawPathLine()

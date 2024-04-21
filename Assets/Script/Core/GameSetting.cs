@@ -49,9 +49,9 @@ namespace Script
         
         public enum FloorDebug
         {
-            Always = 0,
-            LineOfSight = 1,
-            LOS_Propagation = 2
+            No_Color = 0,
+            Room_ChokePoint = 1,
+            Propagation = 2
         }
     }
 }

@@ -49,6 +49,9 @@ public class CooperativeCenter : MonoBehaviour
     [SerializeField]
     public int enemyVisionMode = 0; // 0 - Always, 1 - LOS, 2 - Propagation
 
+    [SerializeField]
+    public int floorDebugMode = 0; // 0 - no color , 1 - Room Door, 2 - Propagation
+
 
     public void OnEnable()
     {
@@ -72,6 +75,10 @@ public class CooperativeCenter : MonoBehaviour
         {
             EnemyVision();
             Propagation();
+        }
+        if (enemyVisionMode == 3)
+        {
+
         }
         ColorMap();
     }
@@ -123,6 +130,26 @@ public class CooperativeCenter : MonoBehaviour
             playerControl.hitboxChecker.immortal = true;
             playerControl.surroundMode = true;
         }
+    }
+
+    public void PathDebugChange(GameSetting.EnemyPathDebug mode)
+    {
+        for (int i = 0; i < enemyAgents.Length; i++)
+        {
+            if (mode == 0)
+            {
+                enemyAgents[i].SetDrawPath(false);
+            }
+            else
+            {
+                enemyAgents[i].SetDrawPath(true);
+            }
+        }
+    }
+
+    public void FloorDebugChange(GameSetting.FloorDebug mode)
+    {
+        floorDebugMode = (int)mode;
     }
 
     public void EnemyVision()

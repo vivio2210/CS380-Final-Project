@@ -145,7 +145,7 @@ PrefabInstance:
     - target: {fileID: 2515806039516012808, guid: 655ca791b5d86384abdf96bbc2f56176,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2736848677341697805, guid: 655ca791b5d86384abdf96bbc2f56176,
         type: 3}
@@ -8386,7 +8386,7 @@ PrefabInstance:
     - target: {fileID: 3547534664829354887, guid: 0b5f06769ba8b8f4f80f22410eb22df8,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3902812073873683842, guid: 0b5f06769ba8b8f4f80f22410eb22df8,
         type: 3}
@@ -12227,7 +12227,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 4
-  useManualControl: 1
+  useManualControl: 0
   hitboxChecker: {fileID: 587367511}
   Camera: {fileID: 963194227}
   enemies: []
@@ -20637,7 +20637,7 @@ PrefabInstance:
     - target: {fileID: 5649942028700400021, guid: 194442435371f6745b5a7a6e32c9b78c,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5649942028700400021, guid: 194442435371f6745b5a7a6e32c9b78c,
         type: 3}

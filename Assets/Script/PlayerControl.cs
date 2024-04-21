@@ -59,6 +59,10 @@ public class PlayerControl : MoveableAgent
             currentTargetGridPosition = PositionConverter.WorldToGridPos(gameObject.transform.position);
             currentTargetPosition = PositionConverter.GridPosToWorld(currentTargetGridPosition);
         }
+        else
+        {
+            ComputeSaveGridPos();
+        }
     }
 
     private void Update()
@@ -69,6 +73,7 @@ public class PlayerControl : MoveableAgent
         }
         else
         {
+            //AutoControl();
             MoveToFarthestDistance();
         }
         SetFaceDirection();
@@ -151,8 +156,8 @@ public class PlayerControl : MoveableAgent
                             farthestGrid.posx = currentGrid.posx;
                             farthestGrid.posz = currentGrid.posz;
 
-                            farthestPoint.posx = currentGrid.posx;
-                            farthestPoint.posz = currentGrid.posz;
+                            //farthestPoint.posx = currentGrid.posx;
+                            //farthestPoint.posz = currentGrid.posz;
                         }
                     }
                 }
@@ -197,6 +202,90 @@ public class PlayerControl : MoveableAgent
 
             pathCount = 0;
         }
+    }
+    private void AutoControl()
+    {
+        if (enemies != null)
+        {
+            // if have path
+            if (currentPath.Count > 0 && pathCount <= stepBeforeCompute)
+            {
+                if (math.abs(currentTargetPosition_Vec3.x - gameObject.transform.position.x) <= 0.1f && math.abs(currentTargetPosition_Vec3.z - gameObject.transform.position.z) <= 0.1f)
+                {
+                    currentGridPosition = currentPath[0];
+                    currentPath.RemoveAt(0);
+                    currentTargetPosition_Vec3 = PositionConverter.GridPosToWorld(currentGridPosition);
+                    pathCount++;
+                }
+                base.SetDestination(currentTargetPosition_Vec3);
+                return;
+            }
+
+            Gridpos playerGrisPos = PositionConverter.WorldToGridPos(this.gameObject.transform.position);
+
+            currentPath = AStarPather.compute_path(playerGrisPos, ComputeSaveGridPos(), true);
+            if (currentPath.Count > 0)
+            {
+                currentGridPosition = new Gridpos(currentPath[0].posx, currentPath[0].posz);
+                currentPath.Add(currentPath[currentPath.Count - 1]);
+                currentPath.RemoveAt(0);
+
+
+                //Debug.Log("player gris pos: " + playerGrisPos.posx + ", " + playerGrisPos.posz);
+                //Debug.Log("current grid pos: " + currentGridPosition.posx + ", " + currentGridPosition.posz);
+                if (currentPath.Count >= 1 && currentPath[currentPath.Count - 1] == playerGrisPos)
+                {
+                    //Debug.Log("currentGridPosition == playerGrisPos");
+                    return;
+                }
+                else
+                {
+                    currentTargetPosition_Vec3 = PositionConverter.GridPosToWorld(currentGridPosition);
+                    base.SetDestination(currentTargetPosition_Vec3);
+                }
+            }
+        }
+    }
+
+    private Gridpos ComputeSaveGridPos()
+    {
+        Gridpos playerGrisPos = PositionConverter.WorldToGridPos(this.gameObject.transform.position);
+
+        int closestenemyindex = -1;
+        float closestenemydistance = 10000;
+        for (int j = 0; j < enemies.Length; j++)
+        {
+            float distance = AStarPather.FindActualDistance(playerGrisPos,
+                PositionConverter.WorldToGridPos(enemies[j].gameObject.transform.position));
+            if (distance < closestenemydistance)
+            {
+                closestenemydistance = distance;
+                closestenemyindex = j;
+            }
+        }
+
+        Gridpos destinationPos = new Gridpos(0, 0);
+        Gridpos closestEnemyPos = PositionConverter.WorldToGridPos(enemies[closestenemyindex].gameObject.transform.position);
+        int farestposindex = -1;
+        float farestposdistance = -1;
+        List<Gridpos> playerSearchArea = AStarPather.GetDijkstraGrid(playerGrisPos,5);
+        for (int i = 0; i < playerSearchArea.Count; i++)
+        {
+            //destinationPos = playerGrisPos + AStarPather.surroundNeighbors[i];
+            destinationPos = playerSearchArea[i];
+            if (MapChecker.IsWall(destinationPos))
+            {
+                continue;
+            }
+            float distance = AStarPather.FindActualDistance(destinationPos, closestEnemyPos);
+            if (distance > farestposdistance)
+            {
+                farestposdistance = distance;
+                farestposindex = i;
+            }
+        }
+
+        return playerSearchArea[farestposindex];
     }
 
     private void SetFaceDirection()

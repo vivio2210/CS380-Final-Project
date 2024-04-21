@@ -36,7 +36,6 @@ public class ModeHandler : MonoBehaviour
 
     public void EnemyBehaviorChange(GameSetting.EnemyMode mode)
     {
-        Debug.Log(mode);
         _cooperativeCenter.EnemyBehaviorChange(mode);
     }
 
@@ -49,4 +48,6 @@ public class ModeHandler : MonoBehaviour
     {
         _cooperativeCenter.PlayerDeadModeChange(mode);
     }
+
+
 }
