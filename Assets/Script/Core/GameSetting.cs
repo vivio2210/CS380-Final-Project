@@ -35,5 +35,23 @@ namespace Script
             LineOfSight = 1,
             LOS_Propagation = 2
         }
+        
+        public enum ResetB
+        {
+            Reset
+        }
+        
+        public enum EnemyPathDebug
+        {
+            Off = 0,
+            On = 1,
+        }
+        
+        public enum FloorDebug
+        {
+            Always = 0,
+            LineOfSight = 1,
+            LOS_Propagation = 2
+        }
     }
 }

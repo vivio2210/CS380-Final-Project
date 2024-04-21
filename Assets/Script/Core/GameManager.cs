@@ -69,11 +69,15 @@ public class GameManager : MonoBehaviour
     public GameSetting.EnemyMode EnemyMode;
     public GameSetting.EnemyCaptureMode EnemyCaptureMode;
     public GameSetting.EnemyVisionMode EnemyVisionMode;
+    public GameSetting.EnemyPathDebug EnemyPathDebug;
+    public GameSetting.FloorDebug FloorDebug;
     
     public UnityEvent<GameSetting.SceneEnum> OnSceneChanged = new UnityEvent<GameSetting.SceneEnum>();
     public UnityEvent<GameSetting.PlayerMode> OnPlayerModeChanged = new UnityEvent<GameSetting.PlayerMode>();
     public UnityEvent<GameSetting.EnemyMode> OnEnemyModeChanged = new UnityEvent<GameSetting.EnemyMode>();
     public UnityEvent<GameSetting.EnemyCaptureMode> OnEnemyCaptureModeChanged = new UnityEvent<GameSetting.EnemyCaptureMode>();
     public UnityEvent<GameSetting.EnemyVisionMode> OnEnemyVisionModeChanged = new UnityEvent<GameSetting.EnemyVisionMode>();
+    public UnityEvent<GameSetting.EnemyPathDebug> OnEnemyPathDebugChanged = new UnityEvent<GameSetting.EnemyPathDebug>();
+    public UnityEvent<GameSetting.FloorDebug> OnFloorDebugChanged = new UnityEvent<GameSetting.FloorDebug>();
     
 }
