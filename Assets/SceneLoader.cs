@@ -12,7 +12,7 @@ public class SceneLoader : MonoBehaviour
     private Dictionary<GameSetting.SceneEnum,bool> _openScenes = new Dictionary<GameSetting.SceneEnum, bool>();
    
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {  
         //add all enum to dictionary
         foreach (GameSetting.SceneEnum scene in Enum.GetValues(typeof(GameSetting.SceneEnum)))
@@ -23,7 +23,13 @@ public class SceneLoader : MonoBehaviour
         _openScenes[GameSetting.SceneEnum.MainMenu] = true;
 
     }
-    
+
+    public void Reload(GameSetting.SceneEnum scene)
+    {
+        UnloadScene(scene);
+        LoadScene(scene);
+    }
+
     public void ChangeScene(GameSetting.SceneEnum scene)
     {
         foreach (GameSetting.SceneEnum sceneEnum in _openScenes.Keys)

@@ -1,3 +1,4 @@
+using System;
 using Script;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,57 +10,43 @@ public class ModeHandler : MonoBehaviour
 {
     private static ModeHandler _instance;
 
-    private CooperativeCenter _cooperativeCenter;
+    [SerializeField]private CooperativeCenter _cooperativeCenter;
 
-    public static ModeHandler GetInstance
+    private void Start()
     {
-        get
+        if (GameManager.Instance)
         {
-            if (_instance == null)
-            {
-                _instance = GameObject.FindObjectOfType<ModeHandler>();
-            }
+            PlayerControlChange(GameManager.Instance.PlayerMode);
+            EnemyBehaviorChange(GameManager.Instance.EnemyMode);
+            PlayerDeadModeChange(GameManager.Instance.EnemyCaptureMode);
+            EnemyVisionModeChange(GameManager.Instance.EnemyVisionMode);
 
-            return _instance;
-        }
-    }
+            GameManager.Instance.OnPlayerModeChanged.AddListener(PlayerControlChange);
+            GameManager.Instance.OnEnemyModeChanged.AddListener(EnemyBehaviorChange);
+            GameManager.Instance.OnEnemyCaptureModeChanged.AddListener(PlayerDeadModeChange);
+            GameManager.Instance.OnEnemyVisionModeChanged.AddListener(EnemyVisionModeChange);
 
-    void Awake()
-    {
-        DontDestroyOnLoad(gameObject);
+        } 
     }
 
     public void EnemyVisionModeChange(GameSetting.EnemyVisionMode mode)
     {
-        if (_cooperativeCenter == null)
-        {
-            _cooperativeCenter = FindObjectOfType<CooperativeCenter>();
-        }
         _cooperativeCenter.EnemyVisionModeChange(mode);
     }
+
     public void EnemyBehaviorChange(GameSetting.EnemyMode mode)
     {
-        if (_cooperativeCenter == null)
-        {
-            _cooperativeCenter = FindObjectOfType<CooperativeCenter>();
-        }
+        Debug.Log(mode);
         _cooperativeCenter.EnemyBehaviorChange(mode);
     }
+
     public void PlayerControlChange(GameSetting.PlayerMode mode)
     {
-        if (_cooperativeCenter == null)
-        {
-            _cooperativeCenter = FindObjectOfType<CooperativeCenter>();
-        }
         _cooperativeCenter.PlayerControlChange(mode);
     }
 
     public void PlayerDeadModeChange(GameSetting.EnemyCaptureMode mode)
     {
-        if (_cooperativeCenter == null)
-        {
-            _cooperativeCenter = FindObjectOfType<CooperativeCenter>();
-        }
         _cooperativeCenter.PlayerDeadModeChange(mode);
     }
 }

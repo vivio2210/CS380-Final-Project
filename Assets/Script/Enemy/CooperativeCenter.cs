@@ -49,7 +49,8 @@ public class CooperativeCenter : MonoBehaviour
     [SerializeField]
     public int enemyVisionMode = 0; // 0 - Always, 1 - LOS, 2 - Propagation
 
-    public void Start()
+
+    public void OnEnable()
     {
         floorColorController = FindObjectOfType<FloorColorController>();
         enemyAgents = FindObjectsOfType<EnemyControler>();

@@ -1,4 +1,5 @@
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Sirenix.OdinInspector;
@@ -12,10 +13,12 @@ public abstract class ToggleButton<T>: MonoBehaviour
 {
     
     [ShowInInspector]private int _currentIndex = 0;
-    [ShowInInspector]Dictionary<T,string> EnumNames = new Dictionary<T, string>();
+    [ShowInInspector]protected Dictionary<T,string> EnumNames = new Dictionary<T, string>();
     
+    public T CurrentEnum => EnumNames.ElementAt(_currentIndex).Key;
     public UnityEvent<T> OnValueChanged = new UnityEvent<T>();
-    private void Start()
+
+    private void Awake()
     {
         foreach (T enumValue in System.Enum.GetValues(typeof(T)))
         {
@@ -24,7 +27,13 @@ public abstract class ToggleButton<T>: MonoBehaviour
         SetText(_currentIndex);
         GetComponent<Button>().onClick.AddListener(OnClick);
     }
-
+    
+    protected void RemoveOption(T option)
+    {
+        EnumNames.Remove(option);
+        SetText(0);
+    }
+    
     private void SetText(int index)
     {
         GetComponentInChildren<TextMeshProUGUI>().text =

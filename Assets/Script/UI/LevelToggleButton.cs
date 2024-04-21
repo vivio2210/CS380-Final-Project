@@ -6,5 +6,9 @@ using UnityEngine;
 
 public class LevelToggleButton: ToggleButton<GameSetting.SceneEnum>
 {
-    
+    private void Start()
+    {
+        RemoveOption(GameSetting.SceneEnum.MainMenu);
+    }
+
 }

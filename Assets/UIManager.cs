@@ -5,15 +5,14 @@ using UnityEngine;
 
 public class UIManager : MonoBehaviour
 {
-    [SerializeField] private LevelToggleButton _levelToggleButton;
-    [SerializeField] private PlayerToggleButton _playerToggleButton;
-    [SerializeField] private EnemyModeToggleButton _enemyModeToggleButton;
-    [SerializeField] private EnemyCaptureModeToggleButton _enemyCaptureModeToggleButton;
-    [SerializeField] private EnemyVisionModeToggleButton _enemyVisionModeToggleButton;
+    [SerializeField] public LevelToggleButton _levelToggleButton;
+    [SerializeField] public PlayerToggleButton _playerToggleButton;
+    [SerializeField] public EnemyModeToggleButton _enemyModeToggleButton;
+    [SerializeField] public EnemyCaptureModeToggleButton _enemyCaptureModeToggleButton;
+    [SerializeField] public EnemyVisionModeToggleButton _enemyVisionModeToggleButton;
 
     private void Start()
     {
-        _levelToggleButton.OnValueChanged.
-            AddListener(GameManager.Instance.SceneLoader.ChangeScene);
+        
     }
 }
