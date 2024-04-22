@@ -119,7 +119,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c7dbe48bef72024193b9385cdf41291, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 1
+  speed: 3
   player: {fileID: 0}
   target: {fileID: 0}
   otherPosition: {x: 0, y: 0, z: 0}
@@ -134,11 +134,12 @@ MonoBehaviour:
   currentTargetPosition: {x: 0, y: 0, z: 0}
   stepBeforeCompute: 5
   stepCount: 0
-  useCooperative: 0
   currentState: 0
+  useCooperative: 0
   wanderColor: {r: 0.55345905, g: 0.55345905, b: 0.55345905, a: 1}
   chaseColor: {r: 1, g: 0, b: 0, a: 1}
   CornerColor: {r: 0, g: 0.6993623, b: 1, a: 1}
+  PacmanColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!120 &5838640123273679370
 LineRenderer:
   serializedVersion: 2

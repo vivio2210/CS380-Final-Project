@@ -11912,7 +11912,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1fd2ad9ee23332142ade6dd575452a8e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 4
+  speed: 3.5
   useManualControl: 0
   hitboxChecker: {fileID: 587367511}
   Camera: {fileID: 963194227}

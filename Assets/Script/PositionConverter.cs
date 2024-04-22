@@ -117,33 +117,30 @@ public class MapChecker
 
     public static bool IsWallOrEnemy(Gridpos gridpos)
     {
-        RaycastHit hit;
+        List<RaycastHit> hits = new List<RaycastHit>();
         Vector3 position = PositionConverter.GridPosToWorld(gridpos);
+        Vector3[] offsetVector = new Vector3[5]{ new Vector3(0,0,0), new Vector3(-0.45f,0,0),
+                                new Vector3(0.45f,0,0), new Vector3(0,0,-0.45f), new Vector3(0,0,0.45f) };
         position.y = 2;
         Vector3 direction = new Vector3(0, -1, 0);
+        RaycastHit hit;
 
-        if (Physics.Raycast(position, direction, out hit, Mathf.Infinity))
+        for (int i = 0; i < 5; i++)
         {
-            if (hit.transform.gameObject.tag == "Enemy" || hit.transform.gameObject.tag == "Wall")
+            Vector3 temp = position + offsetVector[i];
+            if (Physics.Raycast(temp, direction, out hit, Mathf.Infinity))
             {
-                return true;
-            }
-            else
-            {
-                return false;
+                hits.Add(hit);
             }
         }
 
-        //Collider[] hitColliders = Physics.OverlapBox(position, new Vector3(1,1,1), Quaternion.identity);
-        //int i = 0;
-        ////Check when there is a new collider coming into contact with the box
-        //while (i < hitColliders.Length)
-        //{
-        //    //Output all of the collider names
-        //    //Debug.Log("Hit : " + hitColliders[i].name + i);
-        //    //Increase the number of Colliders in the array
-        //    i++;
-        //}
+        for (int i = 0; i < hits.Count; i++)
+        {
+            if (hits[i].transform.gameObject.tag == "Enemy" || hits[i].transform.gameObject.tag == "Wall")
+            {
+                return true;
+            }
+        }
 
         return false;
     }

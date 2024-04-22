@@ -18,7 +18,7 @@ public class EnemyPropagationMap
 
     public static float decay = 0.05f;
 
-    public static float growth = 1.00f * 4;
+    public static float growth = 2.00f;
 
     public static bool initialize()
     {
