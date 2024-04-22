@@ -65,6 +65,10 @@ public class CooperativeCenter : MonoBehaviour
 
     public void Update()
     {
+        if (enemyVisionMode == 0) // always
+        {
+            SetLastSeenPlayerPosition(PositionConverter.WorldToGridPos(player.gameObject.transform.position));
+        }
         if (enemyVisionMode == 1)
         {
             EnemyVision();
@@ -91,7 +95,7 @@ public class CooperativeCenter : MonoBehaviour
     public void EnemyVisionModeChange(GameSetting.EnemyVisionMode mode)
     {
         enemyVisionMode = (int)mode;
-        if (enemyVisionMode == 0)
+        if (enemyVisionMode == 0) // always
         {
 
         }
@@ -303,6 +307,10 @@ public class CooperativeCenter : MonoBehaviour
     public void SetLastSeenPlayerPosition(Gridpos pos)
     {
         lastSeenPlayerPosition = pos;
+        if (enemyVisionMode == 0)
+        {
+
+        }
         if (enemyVisionMode >= 1)
         {
             for (int i = 0; i < 20; i++)

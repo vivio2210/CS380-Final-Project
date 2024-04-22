@@ -205,7 +205,7 @@ public class EnemyControler : MoveableAgent
                 {
                     CooperativeCenter center = FindObjectOfType<CooperativeCenter>();
                     Gridpos tempPosition = PositionConverter.WorldToGridPos(gameObject.transform.position);
-                    if (currentState == Enemy_State.ES_CHASE)
+                    if (currentState == Enemy_State.ES_CHASE && center.enemyVisionMode != 0)
                     {
                         if (center.lastSeenPlayerPosition.posx == tempPosition.posx && center.lastSeenPlayerPosition.posz == tempPosition.posz)
                         {
