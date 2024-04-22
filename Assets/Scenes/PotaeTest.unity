@@ -12227,11 +12227,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 4
-  useManualControl: 1
+  useManualControl: 0
   hitboxChecker: {fileID: 587367511}
   Camera: {fileID: 963194227}
   enemies: []
-  stepBeforeCompute: 4
+  stepBeforeCompute: 1
   currentTargetPosition_Vec3: {x: 0, y: 0, z: 0}
   currentGridPosition:
     posx: 0

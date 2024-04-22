@@ -5,6 +5,7 @@ using Unity.VisualScripting;
 using UnityEngine.UIElements;
 using System;
 using System.Collections.Generic;
+using static UnityEditor.PlayerSettings;
 
 public class PlayerControl : MoveableAgent
 {
@@ -45,6 +46,9 @@ public class PlayerControl : MoveableAgent
     private Vector3 currentTargetPosition = new Vector3(0, 0, 0);
     private Gridpos currentTargetGridPosition = new Gridpos(0, 0);
 
+    private bool firstWalk = true;
+    private Gridpos firstPosition = new Gridpos(8, 11);
+
     private void Awake()
     {
         //Agent = GetComponent<NavMeshAgent>();
@@ -61,6 +65,7 @@ public class PlayerControl : MoveableAgent
         }
         else
         {
+            firstPosition = RandomFirstPosition();
             ComputeSaveGridPos();
         }
     }
@@ -73,6 +78,47 @@ public class PlayerControl : MoveableAgent
         }
         else
         {
+            if(firstWalk == true)
+            {
+                Gridpos playerGrisPos = new Gridpos(PositionConverter.WorldToGridPos(this.gameObject.transform.position).posx,
+                    PositionConverter.WorldToGridPos(this.gameObject.transform.position).posz);
+                //Debug.Log("player gridpos: " + playerGrisPos.posx + ", " + playerGrisPos.posz);
+                if (playerGrisPos.posx == firstPosition.posx && playerGrisPos.posz == firstPosition.posz)
+                {
+                    firstWalk = false;
+                }
+
+                if (currentPath.Count > 0 && pathCount <= stepBeforeCompute)
+                {
+                    if (math.abs(currentTargetPosition_Vec3.x - gameObject.transform.position.x) <= 0.1f && math.abs(currentTargetPosition_Vec3.z - gameObject.transform.position.z) <= 0.1f)
+                    {
+                        currentGridPosition = currentPath[0];
+                        currentPath.RemoveAt(0);
+                        currentTargetPosition_Vec3 = PositionConverter.GridPosToWorld(currentGridPosition);
+                        pathCount++;
+                    }
+                    base.SetDestination(currentTargetPosition_Vec3);
+                    return;
+                }
+
+                AStarPather.PlayerComputeNeighbor();
+
+                currentPath.Clear();
+
+                currentPath = AStarPather.compute_path(playerGrisPos, firstPosition, true);
+                if (currentPath.Count > 0)
+                {
+                    currentGridPosition = new Gridpos(currentPath[0].posx, currentPath[0].posz);
+                    currentPath.Add(currentPath[currentPath.Count - 1]);
+                    currentPath.RemoveAt(0);
+
+                    currentTargetPosition_Vec3 = PositionConverter.GridPosToWorld(currentGridPosition);
+                    base.SetDestination(currentTargetPosition_Vec3);
+                }
+
+                pathCount = 0;
+                return;
+            }
             //AutoControl();
             MoveToFarthestDistance();
         }
@@ -123,29 +169,29 @@ public class PlayerControl : MoveableAgent
                             Gridpos enemyPosition = PositionConverter.WorldToGridPos(enemies[i].gameObject.transform.position);
 
                             distance = Mathf.Pow(enemyPosition.posx - currentGrid.posx, 2) + Mathf.Pow(enemyPosition.posz - currentGrid.posz, 2);
-                            if (distance <= 1.0f)
-                                distance *= 0;
-                            else if (distance <= 3.0f)
-                                distance *= 0.2f;
-                            else if (distance <= 5.0f)
-                                distance *= 0.4f;
-                            else if (distance <= 7.0f)
-                                distance *= 0.6f;
-                            else if (distance <= 9.0f)
-                                distance *= 0.8f;
-
-                            //if (distance <= 10.0f)
-                            //    distance *= 0.4f;
-                            //else if (distance <= 16.0f)
+                            //if (distance <= 1.0f)
+                            //    distance *= 0;
+                            //else if (distance <= 3.0f)
                             //    distance *= 0.2f;
-                            //else if (distance <= 25.0f)
-                            //    distance *= 0.0f;
-                            //else if (distance <= 49.0f)
+                            //else if (distance <= 5.0f)
                             //    distance *= 0.4f;
-                            //else if (distance <= 81.0f)
+                            //else if (distance <= 7.0f)
                             //    distance *= 0.6f;
-                            //else if (distance <= 100.0f)
+                            //else if (distance <= 9.0f)
                             //    distance *= 0.8f;
+
+                            if (distance <= 16.0f)
+                                distance *= 0.8f;
+                            else if (distance <= 25.0f)
+                                distance *= 0.2f;
+                            else if (distance <= 36.0f)
+                                distance *= 0.0f;
+                            else if (distance <= 49.0f)
+                                distance *= 0.4f;
+                            else if (distance <= 81.0f)
+                                distance *= 0.6f;
+                            else if (distance <= 100.0f)
+                                distance *= 0.8f;
 
                             totalDistance += distance;
                         }
@@ -162,16 +208,6 @@ public class PlayerControl : MoveableAgent
                     }
                 }
             }
-
-            //GameObject floor = GameObject.Find("Floor");
-            //FloorColorController floorController = floor.GetComponent<FloorColorController>();
-
-            //Color color = new Color(0.0f, 1.0f, 0.0f, 1.0f);
-
-            //floorController.ChangeFloorColor(farthestPoint.posx, farthestPoint.posz, color);
-
-            //currentTargetPosition = farthestGrid;
-            //Agent.SetDestination(PositionConverter.GridPosToWorld(farthestGrid));
 
             currentPath.Clear();
 
@@ -397,5 +433,31 @@ public class PlayerControl : MoveableAgent
             }
             base.SetDestination(currentTargetPosition);
         }
+    }
+
+    private Gridpos RandomFirstPosition()
+    {
+        Gridpos pos;
+        int x, z;
+
+        Gridpos playerGrisPos = new Gridpos(PositionConverter.WorldToGridPos(this.gameObject.transform.position).posx,
+            PositionConverter.WorldToGridPos(this.gameObject.transform.position).posz);
+
+        while (true)
+        {
+            x = UnityEngine.Random.Range(-6, 7);
+            z = UnityEngine.Random.Range(-6, 7);
+
+            if(MapChecker.IsWall(playerGrisPos.posx + x, playerGrisPos.posz + z) == false)
+            {
+                break;
+            }
+        }
+
+        // Assign values to pos before returning it
+        pos = new Gridpos(playerGrisPos.posx + x, playerGrisPos.posz + z);
+        //Debug.Log("player first position: " + pos.posx + ", " + pos.posz);
+
+        return pos;
     }
 }
