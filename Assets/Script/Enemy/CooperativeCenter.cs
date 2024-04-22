@@ -116,10 +116,12 @@ public class CooperativeCenter : MonoBehaviour
         if (mode == 0)
         {
             playerControl.useManualControl = true;
+            playerControl.ChangeControl();
         }
         else
         {
             playerControl.useManualControl = false;
+            playerControl.ChangeControl();
         }
         
     }

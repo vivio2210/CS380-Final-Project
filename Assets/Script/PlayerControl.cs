@@ -244,6 +244,20 @@ public class PlayerControl : MoveableAgent
         }
     }
 
+    public void ChangeControl()
+    {
+        if (useManualControl)
+        {
+            currentTargetGridPosition = PositionConverter.WorldToGridPos(gameObject.transform.position);
+            currentTargetPosition = PositionConverter.GridPosToWorld(currentTargetGridPosition);
+        }
+        else
+        {
+            firstPosition = RandomFirstPosition();
+            ComputeSaveGridPos();
+        }
+    }
+
     public void CantFindWayToWalk()
     {
         if (surroundMode)
