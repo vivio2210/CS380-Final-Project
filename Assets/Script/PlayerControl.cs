@@ -1,12 +1,6 @@
-using UnityEngine.AI;
 using UnityEngine;
 using Unity.Mathematics;
-using Unity.VisualScripting;
-using UnityEngine.UIElements;
-using System;
 using System.Collections.Generic;
-using static UnityEditor.PlayerSettings;
-using UnityEngine.Rendering.Universal;
 
 public class PlayerControl : MoveableAgent
 {

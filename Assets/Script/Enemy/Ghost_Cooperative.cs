@@ -1,13 +1,5 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using Unity.Mathematics;
-using Unity.VisualScripting;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
-using UnityEngine.AI;
-using UnityEngine.PlayerLoop;
-using static UnityEngine.GraphicsBuffer;
+
 
 [CreateAssetMenu(fileName = "Ghost_Cooperative_SO", menuName = "ScriptableObjects/Ghost_Cooperative_SO")]
 public class Ghost_Cooperative : EnemyPathManager

@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using Script;
 using UnityEngine;
 using UnityEngine.Events;
@@ -21,13 +18,9 @@ public class GameManager : MonoBehaviour
         {
             if (scene != this.Scene)
             {
+                SceneLoader.ChangeScene(this.Scene , scene);
                 this.Scene = scene;
-                SceneLoader.ChangeScene(scene);
                 OnSceneChanged.Invoke(scene);
-            }
-            else
-            {
-                SceneLoader.Reload(scene);
             }
 
         });
@@ -77,7 +70,7 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        SceneLoader.ChangeScene(GameSetting.SceneEnum.PacMan);
+        SceneLoader.LoadScene(GameSetting.SceneEnum.PacMan);
     }
 
 

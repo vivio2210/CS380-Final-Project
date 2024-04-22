@@ -943,6 +943,21 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8192554572261824793, guid: 73f27e25e7c988d4083c6b74a66a8f5c,
+        type: 3}
+      propertyPath: m_text
+      value: Show LOS
+      objectReference: {fileID: 0}
+    - target: {fileID: 8192554572261824793, guid: 73f27e25e7c988d4083c6b74a66a8f5c,
+        type: 3}
+      propertyPath: m_fontSize
+      value: 35.65
+      objectReference: {fileID: 0}
+    - target: {fileID: 8192554572261824793, guid: 73f27e25e7c988d4083c6b74a66a8f5c,
+        type: 3}
+      propertyPath: m_enableAutoSizing
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1131,6 +1146,21 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8192554572261824793, guid: 73f27e25e7c988d4083c6b74a66a8f5c,
+        type: 3}
+      propertyPath: m_text
+      value: Debug Floor
+      objectReference: {fileID: 0}
+    - target: {fileID: 8192554572261824793, guid: 73f27e25e7c988d4083c6b74a66a8f5c,
+        type: 3}
+      propertyPath: m_fontSize
+      value: 30.75
+      objectReference: {fileID: 0}
+    - target: {fileID: 8192554572261824793, guid: 73f27e25e7c988d4083c6b74a66a8f5c,
+        type: 3}
+      propertyPath: m_enableAutoSizing
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1509,6 +1539,21 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8192554572261824793, guid: 73f27e25e7c988d4083c6b74a66a8f5c,
+        type: 3}
+      propertyPath: m_text
+      value: Reset Scene
+      objectReference: {fileID: 0}
+    - target: {fileID: 8192554572261824793, guid: 73f27e25e7c988d4083c6b74a66a8f5c,
+        type: 3}
+      propertyPath: m_fontSize
+      value: 29.65
+      objectReference: {fileID: 0}
+    - target: {fileID: 8192554572261824793, guid: 73f27e25e7c988d4083c6b74a66a8f5c,
+        type: 3}
+      propertyPath: m_enableAutoSizing
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

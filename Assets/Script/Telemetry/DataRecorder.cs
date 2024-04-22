@@ -17,19 +17,19 @@ public class DataRecorder : MonoBehaviour
     private void Awake()
     {
         Instance = this;
+        DontDestroyOnLoad(this);
     }
     
     private void Start()
     {
-        NewSession();
-        Invoke(nameof(EndSession),3f);
+        //NewSession();
+        //Invoke(nameof(EndSession),3f);
     }
 
     private void newFile(ref StreamWriter writer, string path)
     {
         if (!File.Exists(path))
         {
-            Debug.Log("Creating new file");
             writer = new StreamWriter(path);
             string header = "";
         

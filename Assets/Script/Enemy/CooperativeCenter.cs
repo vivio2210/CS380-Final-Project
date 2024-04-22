@@ -1,12 +1,7 @@
 using Script;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
-using static Script.GameSetting;
-using static UnityEditor.PlayerSettings;
-using static UnityEngine.UI.ContentSizeFitter;
 
 public enum Enemy_State
 {

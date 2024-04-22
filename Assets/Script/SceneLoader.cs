@@ -30,36 +30,32 @@ public class SceneLoader : MonoBehaviour
         LoadScene(scene);
     }
 
-    public void ChangeScene(GameSetting.SceneEnum scene)
+    public void ChangeScene(GameSetting.SceneEnum oldSceneEnum, GameSetting.SceneEnum newSceneEnum)
     {
-        foreach (GameSetting.SceneEnum sceneEnum in _openScenes.Keys)
-        {
-            if (_openScenes[sceneEnum] && sceneEnum != GameSetting.SceneEnum.MainMenu)
-            {
-                UnloadScene(sceneEnum);
-            }
-        }
-        LoadScene(scene);
+        UnloadScene(oldSceneEnum);
+        LoadScene(newSceneEnum);
     }
     
     [Button]
-    void LoadScene(GameSetting.SceneEnum scene)
+    public void LoadScene(GameSetting.SceneEnum scene)
     {
         if (!_openScenes[scene])
         {
             SceneManager.LoadSceneAsync((int)scene, LoadSceneMode.Additive);
             _openScenes[scene] = true;
+
         }
         
     }
     [Button]
 
-    void UnloadScene(GameSetting.SceneEnum scene)
+    public void UnloadScene(GameSetting.SceneEnum scene)
     {
         if (_openScenes[scene])
         {
             SceneManager.UnloadSceneAsync((int)scene);
             _openScenes[scene] = false;
+
         }
     }
 }
