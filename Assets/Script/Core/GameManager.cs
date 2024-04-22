@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Linq;
 using Script;
 using UnityEngine;
 using UnityEngine.Events;
@@ -9,6 +11,19 @@ public class GameManager : MonoBehaviour
     public SceneLoader SceneLoader => GetComponent<SceneLoader>();
     
     [SerializeField] private UIManager _uiManager;
+
+
+    private IEnumerator ReloadAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        DataRecorder.Instance.EndSession();
+        SceneLoader.Reload(Scene);
+    }
+
+    public void Reload()
+    {
+        StartCoroutine(ReloadAfterDelay(2f));
+    }
 
     private void Awake()
     {

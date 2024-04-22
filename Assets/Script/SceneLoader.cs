@@ -32,6 +32,8 @@ public class SceneLoader : MonoBehaviour
 
     public void ChangeScene(GameSetting.SceneEnum oldSceneEnum, GameSetting.SceneEnum newSceneEnum)
     {
+        DataRecorder.Instance.EndSession();
+
         UnloadScene(oldSceneEnum);
         LoadScene(newSceneEnum);
     }

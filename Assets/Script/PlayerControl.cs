@@ -267,7 +267,7 @@ public class PlayerControl : MoveableAgent
                 Debug.Log("Player Surrounded");
                 if (DataRecorder.Instance)
                 {
-                    DataRecorder.Instance.EndSession();
+                    DataRecorder.Instance.EndSession(true);
                 }
             }
         }
