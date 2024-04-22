@@ -89,7 +89,7 @@ public class DataRecorder : MonoBehaviour
         isRecording = false;
 
         //covnert to mm:ss:ms
-        string time = $"{Mathf.FloorToInt(timer / 60)}:{Mathf.FloorToInt(timer % 60)}:{Mathf.FloorToInt((timer % 1) * 1000)}";
+        string time = $"{Mathf.FloorToInt(timer % 60)}.{Mathf.FloorToInt((timer % 1) * 1000)}";
 
         var gm = GameManager.Instance;
         SessionResultFile.WriteLineAsync($"{time},{isWin},{gm.Scene},{gm.PlayerMode},{gm.EnemyMode},{gm.EnemyCaptureMode},{gm.EnemyVisionMode}");
