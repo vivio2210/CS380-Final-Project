@@ -39,6 +39,9 @@ public class CooperativeCenter : MonoBehaviour
     public Color roomColor;
 
     [SerializeField]
+    public Color enemyRoomColor;
+
+    [SerializeField]
     public Color lastSeenPlayerPointColor;
 
     private FloorColorController floorColorController;
@@ -76,11 +79,18 @@ public class CooperativeCenter : MonoBehaviour
             EnemyVision();
             Propagation();
         }
-        if (enemyVisionMode == 3)
+        if (floorDebugMode == 0)
         {
-
+            ClearColorMap();
         }
-        ColorMap();
+        if (enemyVisionMode == 1)
+        {
+            ColorDoorRoomMap();
+        }
+        if (enemyVisionMode == 2)
+        {
+            ColorPropagateMap();
+        }
     }
 
     public void EnemyVisionModeChange(GameSetting.EnemyVisionMode mode)
@@ -188,7 +198,31 @@ public class CooperativeCenter : MonoBehaviour
     {
         floorColorController.ClearColor();
     }
-    public void ColorMap()
+    public void ColorDoorRoomMap()
+    {
+        floorColorController.ClearColor();
+        for (int k = 0; k < enemyAgents.Length; k++)
+        {
+            Gridpos enemyAgentsPosition = PositionConverter.WorldToGridPos(enemyAgents[k].gameObject.transform.position);
+            List<Gridpos> room = AStarPather.GetRoomGrid(enemyAgentsPosition);
+            for (int i = 0; i < room.Count; i++)
+            {
+                floorColorController.ChangeFloorColor(room[i].posx, room[i].posz, enemyRoomColor);
+            }
+        }
+        Gridpos playerAgentsPosition = PositionConverter.WorldToGridPos(playerControl.gameObject.transform.position);
+        List<Gridpos> playerRoom = AStarPather.GetRoomGrid(playerAgentsPosition);
+        for (int i = 0; i < playerRoom.Count; i++)
+        {
+            floorColorController.ChangeFloorColor(playerRoom[i].posx, playerRoom[i].posz, roomColor);
+        }
+        for (int i = 0; i < AStarPather.branchTrackLists.Count; i++)
+        {
+            Gridpos temp = AStarPather.branchTrackLists[i];
+            floorColorController.ChangeFloorColor(temp.posx, temp.posz, doorColor);
+        }
+    }
+    public void ColorPropagateMap()
     {
         for (int i = 0; i < 20; i++)
         {

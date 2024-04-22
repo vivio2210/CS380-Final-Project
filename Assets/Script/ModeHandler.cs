@@ -20,12 +20,15 @@ public class ModeHandler : MonoBehaviour
             EnemyBehaviorChange(GameManager.Instance.EnemyMode);
             PlayerDeadModeChange(GameManager.Instance.EnemyCaptureMode);
             EnemyVisionModeChange(GameManager.Instance.EnemyVisionMode);
+            PathDebugModeChange(GameManager.Instance.EnemyPathDebug);
+            FlorDebugModeChange(GameManager.Instance.FloorDebug);
 
             GameManager.Instance.OnPlayerModeChanged.AddListener(PlayerControlChange);
             GameManager.Instance.OnEnemyModeChanged.AddListener(EnemyBehaviorChange);
             GameManager.Instance.OnEnemyCaptureModeChanged.AddListener(PlayerDeadModeChange);
             GameManager.Instance.OnEnemyVisionModeChanged.AddListener(EnemyVisionModeChange);
-
+            GameManager.Instance.OnEnemyPathDebugChanged.AddListener(PathDebugModeChange);
+            GameManager.Instance.OnFloorDebugChanged.AddListener(FlorDebugModeChange);
         } 
     }
 
@@ -49,5 +52,14 @@ public class ModeHandler : MonoBehaviour
         _cooperativeCenter.PlayerDeadModeChange(mode);
     }
 
+    public void PathDebugModeChange(GameSetting.EnemyPathDebug mode)
+    {
+        _cooperativeCenter.PathDebugChange(mode);
+    }
+
+    public void FlorDebugModeChange(GameSetting.FloorDebug mode)
+    {
+        _cooperativeCenter.FloorDebugChange(mode);
+    }
 
 }
