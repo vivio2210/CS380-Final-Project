@@ -56,6 +56,23 @@ public class GameManager : MonoBehaviour
             this.EnemyVisionMode = mode;
             OnEnemyVisionModeChanged.Invoke(mode);
         });
+        
+        _uiManager._enemyPathDebugButton.OnValueChanged.AddListener(mode =>
+        {
+            this.EnemyPathDebug = mode;
+            OnEnemyPathDebugChanged.Invoke(mode);
+        });
+        
+        _uiManager._floorDebugButton.OnValueChanged.AddListener(mode =>
+        {
+            this.FloorDebug = mode;
+            OnFloorDebugChanged.Invoke(mode);
+        });
+        
+        _uiManager._levelResetButton.OnValueChanged.AddListener(call =>
+        {
+            SceneLoader.Reload(Scene);
+        });
     }
 
     private void Start()
