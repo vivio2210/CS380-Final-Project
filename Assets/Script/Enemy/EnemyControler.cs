@@ -223,12 +223,23 @@ public class EnemyControler : MoveableAgent
 
                 firstStep++;
             }
+
+            if (paths.Count >= 1 && paths[paths.Count - 1] == PositionConverter.WorldToGridPos(gameObject.transform.position))
+            {
+                //Debug.Log("currentGridPosition == playerGrisPos");
+                return;
+            }
+            else
+            {
+                base.SetDestination(currentTargetPosition);
+            }
         }
         else 
         {
             SetNewTargetPosition();
         }
-        base.SetDestination(currentTargetPosition);
+        //base.SetDestination(currentTargetPosition);
+
     }
 
     public void SetMode(Enemy_State state)
