@@ -11,4 +11,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/PotaeTest.unity
     guid: ac8ca31c7f9f45046a59ef5338860b75
+  - enabled: 1
+    path: Assets/Scenes/PotaeTest 2.unity
+    guid: 62c91a0be5e17674c948eb9383a1f53a
   m_configObjects: {}

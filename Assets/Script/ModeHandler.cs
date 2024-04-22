@@ -61,5 +61,9 @@ public class ModeHandler : MonoBehaviour
     {
         _cooperativeCenter.FloorDebugChange(mode);
     }
+    //public void FlorDebugModeChange(GameSetting.FloorDebug mode)
+    //{
+    //    _cooperativeCenter.FloorDebugChange(mode);
+    //}
 
 }

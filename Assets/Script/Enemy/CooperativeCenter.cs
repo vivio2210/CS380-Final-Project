@@ -83,11 +83,11 @@ public class CooperativeCenter : MonoBehaviour
         {
             ClearColorMap();
         }
-        if (enemyVisionMode == 1)
+        if (floorDebugMode == 1)
         {
             ColorDoorRoomMap();
         }
-        if (enemyVisionMode == 2)
+        if (floorDebugMode == 2)
         {
             ColorPropagateMap();
         }

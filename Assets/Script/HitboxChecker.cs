@@ -14,6 +14,10 @@ public class HitboxChecker : MonoBehaviour
                 if (!immortal)
                 {
                     Debug.Log("Player Died");
+                    if (DataRecorder.Instance)
+                    {
+                        DataRecorder.Instance.EndSession();
+                    }
                     gameObject.SetActive(false);
                 }
             }

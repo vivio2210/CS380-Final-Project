@@ -8,7 +8,9 @@ namespace Script
         public enum SceneEnum
         {
             MainMenu = 0,
-            Game = 1
+            PacMan = 1,
+            Test1 = 2,
+            Test2 = 3
         }
         
         public enum PlayerMode

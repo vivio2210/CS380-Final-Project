@@ -77,11 +77,11 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        SceneLoader.ChangeScene(GameSetting.SceneEnum.Game);
+        SceneLoader.ChangeScene(GameSetting.SceneEnum.PacMan);
     }
 
 
-    public GameSetting.SceneEnum Scene = GameSetting.SceneEnum.Game;
+    public GameSetting.SceneEnum Scene = GameSetting.SceneEnum.PacMan;
     public GameSetting.PlayerMode PlayerMode;
     public GameSetting.EnemyMode EnemyMode;
     public GameSetting.EnemyCaptureMode EnemyCaptureMode;

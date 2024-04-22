@@ -6,6 +6,7 @@ using UnityEngine.UIElements;
 using System;
 using System.Collections.Generic;
 using static UnityEditor.PlayerSettings;
+using UnityEngine.Rendering.Universal;
 
 public class PlayerControl : MoveableAgent
 {
@@ -67,6 +68,11 @@ public class PlayerControl : MoveableAgent
         {
             firstPosition = RandomFirstPosition();
             ComputeSaveGridPos();
+        }
+
+        if (DataRecorder.Instance)
+        {
+            DataRecorder.Instance.NewSession();
         }
     }
 
@@ -232,6 +238,10 @@ public class PlayerControl : MoveableAgent
                     base.SetDestination(currentTargetPosition_Vec3);
                 }
             }
+            else
+            {
+                CantFindWayToWalk();
+            }
 
             //currentTargetPosition_Vec3 = PositionConverter.GridPosToWorld(currentGridPosition);
             //base.SetDestination(currentTargetPosition_Vec3);
@@ -239,6 +249,22 @@ public class PlayerControl : MoveableAgent
             pathCount = 0;
         }
     }
+
+    public void CantFindWayToWalk()
+    {
+        if (surroundMode)
+        {
+            if (!MapChecker.IsWall(PositionConverter.WorldToGridPos(Hits[0].point)))
+            {
+                Debug.Log("Player Surrounded");
+                if (DataRecorder.Instance)
+                {
+                    DataRecorder.Instance.EndSession();
+                }
+            }
+        }
+    }
+
     private void AutoControl()
     {
         if (enemies != null)
@@ -366,13 +392,7 @@ public class PlayerControl : MoveableAgent
                 }
                 else
                 {
-                    if (surroundMode)
-                    {
-                        if (!MapChecker.IsWall(PositionConverter.WorldToGridPos(Hits[0].point)))
-                        {
-                            Debug.Log("Player Surrounded");
-                        }
-                    }
+                    CantFindWayToWalk();
                 }
             }
         }
